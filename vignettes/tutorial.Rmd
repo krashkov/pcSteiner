@@ -17,6 +17,7 @@ header-includes:
    - \renewcommand{\thealgocf}{}
    - \usepackage{etoc}
    - \usepackage{blindtext}
+   - \usepackage{bbm}
 vignette: >
   %\VignetteIndexEntry{tutorial}
   %\VignetteEngine{knitr::rmarkdown}
@@ -284,9 +285,38 @@ Other schedules for message-passing are possible [8,9].
 
 # 3 BP for PCST
 
+\forceindent This section is dedicated to the algorithm for solving the Prize-Collecting Steiner tree problem via belief propagation, introduced by the working group of Bayati, Braunstein et al. [1-3]. The *D-bounded rooted PCST* is being considered, which means, that the goal is to solve PCST problem with given root $r$ and maximum depth $D$. This section provides only an overview of the algorithm and does not cover material in a great detail.
+
+|    **Problem 3.1 (D-bounded rooted PCST).**
+|         *Input:* an undirected graph $G$, a set $T \subseteq V$, costs $c:E \rightarrow R_+$, prizes $p: V \rightarrow R_+$, root $r \in V$, depth $D$
+|         *Output:* find $r$-rooted tree $G_1 = (V_1, E_1)$ with depth $D$ by minimizing the following function $f(G_1) =$
+|         $\sum_{e \in E_1} c_e + \lambda \sum_{i \notin V_1} p_i$
+
 ## 3.1 Local constraints
 
-## 3.2 Equations
+\forceindent The algorithm starts with a graph $G = (V, E)$ and root $r$. Each node $i \in V$ is assigned a couple of variable $(p_i, d_i)$, which has the following meaning:
+
+\begin{itemize}
+    \item $d_i \in \{1, ..., D\}$ denotes the distance to the root $r$
+    \item $p_i \in \partial i \cup \{*\}$, where $\partial i = \{j: (ij) \in E\}$ and $p_i = \{*\} \Leftrightarrow i \notin V_1$. It represents a parent of a node $i$.
+\end{itemize}
+
+Variables $(p_i, d_i)$ can not take arbitrary values, that is, they have to satisfy the following constraints $\forall (ij) \in E$:
+
+$$
+\begin{cases}
+p_i = j \Rightarrow d_i = d_j + 1\\
+p_i = j \Rightarrow p_j \neq \{*\}
+\end{cases}
+\tag{3.1}
+$$
+
+Should we introduce the auxiliary function $f_{ij} = \mathbbm{1}_{p_i=j \Rightarrow d_i=d_j+1\wedge p_j\neq\{*\}}$, the system above will be equivalent to the following expression:
+
+$$
+g_{ij} = f_{ij}f_{ji}
+\tag{3.2}
+$$
 
 *References*
 
