@@ -93,3 +93,59 @@ The Prize-Collecting Steiner tree problem reduces to the Steiner problem when al
 * Markov random fields
 * Factor graphs
 
+### 2.1.1 Bayesian networks
+
+\forceindent \textit{Bayesian network} is a directed graph. Each random variable $x_i$ has an associated conditional probability distribution or local probabilistic model. A direct edge from $x_i$ to $x_j$ represents a conditional probability of a random variable, given its parents $P(x_i|x_j)$. Bayesian network defines a joint probability distribution:
+
+$$
+P(x_1, \dots, x_n) = \prod_{i=1}^{n}P(x_i\ |\ \mathbf{Par}(x_i))
+\tag{2.1}
+$$
+
+### 2.1.2 Markov random fields
+
+\forceindent \textit{Markov random fields} are based on undirected graphical models. As in a Bayesian network, nodes in a graph represent variables. An associated probability distribution factorizes into functions, each function associated with a clique of the graph:
+
+$$
+P(x_1, ..., x_n) = Z^{-1} \prod_{C \in \mathcal{C}} \psi_C(x_C)
+\tag{2.2}
+$$
+
+where $Z$ is a constant chosen to ensure that the distribution is normalized. The set $\mathcal{C}$ is often taken to be the set of all maximal cliques of the graph. For a general undirected graph the compatibility functions $\psi_C$ need not have any obvious or direct relation to probabilities or conditional distributions defined over the graph cliques. 
+
+\forceindent A special case of Markov random field is a *pairwise Markov random field* where the probability distribution factorizes into functions of two variables.
+
+### 2.1.3 Factor graphs
+
+\forceindent The most general parameterization is a *factor graph*. Factor graphs explicitly draw out the factors in a factorization of the joint probability. Note, that it is possible to convert arbitrary MRF or Bayesian network into equivalent factor graph.
+
+**Defenition 2.1.** Factor graph is a pair $\mathcal{F} = (G, \{f_1, \dots, f_n\})$, where
+
+\begin{itemize}
+    \item $G = (V, E)$ is an undirected bipartite graph such that $V = X \cup F$, where $X \cup F = \emptyset$. The nodes $X$ are variable nodes, while the nodes F are factor nodes.
+    \item Further, $f_1, \dots ,f_n$ are positive functions and the number of functions equals the number of nodes in $F = \{F_1, \dots , F_n\}$. Each node $F_i$ is associated with the corresponding function $f_i$ and each $f_i$ is a function of the neighboring variables of $F_i$, i.e. $f_i = f_i(\mathbf{Nb}(F_i))$.
+\end{itemize}
+
+The joint probability distribution of a factor graph of $N$ variables with $M$ functions factorizes as follows:
+
+$$
+P(\{x\}) = Z^{-1} \prod_{a=1}^M \psi(\{x\}_a)
+\tag{2.3}
+$$
+
+where $Z$ is a normalization constant. 
+
+### 2.1.3 Statistical inference
+
+\forceindent Both directed and undirected graphical models represent a full joint probability distribution. It is important to solve the following computational inference problems:
+
+\begin{itemize}
+    \item computing the marginal distribution $P(\{x\}_A)$ over a particular subset $A \in V$ of nodes, i.e. sum over all the possible states of all the other nodes in the system
+    \item computing the conditional distribution $P(\{x\}_A\ |\ \{x\}_B )$, where $A \cap B = \emptyset$ and $A, B \in V$
+    \item computing the maximum a posteriori (MAP), i.e. finding the most likely joint assignment to a particular set of variables: $\text{argmax}_{\{x\}_A} P(\{x\}_A\ |\ \{x\}_B)$
+\end{itemize}
+
+**Defenition 2.2.** Marginal probabilities that are computed approximately are called *beliefs*. The belief at node $i$ is denoted by $b(x_i)$.
+
+**Theorem 2.1.** Every type of inference in graphical models is $NP$-hard. Even simplest problem of computing the distribution over a single binary variable is $NP$-hard.
+
