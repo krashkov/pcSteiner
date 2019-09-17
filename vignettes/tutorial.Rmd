@@ -149,3 +149,161 @@ where $Z$ is a normalization constant.
 
 **Theorem 2.1.** Every type of inference in graphical models is $NP$-hard. Even simplest problem of computing the distribution over a single binary variable is $NP$-hard.
 
+## 2.2 Belief propagation
+
+\forceindent In this section we will consider only **singly-connected probabilistic graphical models.** In later subsection, we will extend the algorithm to graphs with loops.
+
+\forceindent Belief propagation is a message-passing algorithm for solving inference tasks, at least approximately. The BP equations for Bayesian networks, MRFs and factor graphs slightly differs from each other, but, in fact, they are all mathematically equivalent. To keep things simple, we will stick with pairwise MRFs, since the version for them has only one kind of message, while the BP equations, for example, for factor graphs are described using two kinds of messages: from factor to variable and vice versa. According to our assumption, distribution factorizes as follows:
+
+$$
+P(\{x\}) = Z^{-1} \prod_{(ij)} \psi_{(ij)}(x_i, x_j)
+\tag{2.4}
+$$
+
+### 2.2.1 Sum-product
+
+\forceindent Here we will introduce an algorithm for performing marginalization in loop-free graphical models. Let's consider the following simple pairwise MRF: $P(\{x\}) = Z^{-1} \psi_{1}(x_1, x_2)\psi_{2}(x_2, x_4)\psi_{3}(x_2, x_3)$. Our goal is to compute marginal distribution of $x_1$:
+
+$$
+\begin{aligned}
+P(x_1) & = Z^{-1} \sum_{x_2, x_3, x_4} \psi_{1}(x_1, x_2)\psi_{2}(x_2, x_4)\psi_{3}(x_2, x_3) = \\
+& = Z^{-1} \sum_{x_2} \psi_{1}(x_1, x_2) \left[\sum_{x_4} \psi_{2}(x_2, x_4)\right] \left[\sum_{x_3}\psi_{3}(x_2, x_3) \right] = \\
+& = Z^{-1} \sum_{x_2} \psi_{1}(x_1, x_2) \mu_{4\rightarrow 2}(x_2) \mu_{3\rightarrow 2}(x_2) = \\
+& = Z^{-1} \mu_{2\rightarrow 1} (x_1)
+\end{aligned}
+\tag{2.5}
+$$
+
+The generalization of the procedure above is exactly belief propagation or sum-product algorithm.
+
+\begin{algorithm}[H]
+    \SetAlgorithmName{Algorithm 2.1}
+    \SetAlgoLined
+    \text{\textbf{Input:}} PGM, variable node $n \in V$\;
+    \text{\textbf{Output:}} marginal distribution $P(x_n)$\;
+    recursively compute messages\;
+    \Indp $\mu_{i\rightarrow j} (x_j) = \sum_{x_i} \psi_{(ij)} (x_i, x_j) \prod_{k \in \mathbf{Nb}(x_i)\setminus \{x_j\}} \mu_{k\rightarrow i}(x_i)$\;
+    \Indm return marginal distribution $P(x_n) = Z^{-1} \prod_{i\in \mathbf{Nb}(x_n)} \mu_{i\rightarrow n} (x_n)$
+    \caption{Sum-product algorithm for trees}
+\end{algorithm}
+
+**Defenition 2.3.** $\mu_{i\rightarrow j} (x_j)$ is a so-called *message* from variable $x_i$ to variable $x_j$.
+
+### 2.2.2 Max-product
+
+\forceindent The Max-product algorithm computes the *max-marginal* at each node of a graph $\bar{p}_{x_i}(x_i) = \max_{x_j: j \neq i} p_{\{x\}} (\{x\})$. If there are no ties at each node, then $x_i^* \in \text{argmax}_{x_i} \bar{p}_{x_i}(x_i)$ is the unique global MAP assignment.
+
+\forceindent The idea behind Max-product is nearly the same as for Sum-product: instead of summing over the states of other nodes, we should find the ```max``` over those states. The ```max``` operator passes through variables just as the summation sign did.
+
+\begin{algorithm}[H]
+    \SetAlgorithmName{Algorithm 2.2}
+    \SetAlgoLined
+    \text{\textbf{Input:}} PGM\;
+    \text{\textbf{Output:}} MAP assignment\;
+    recursively compute messages\;
+    \Indp $\mu_{i\rightarrow j} (x_j) = \max_{x_i} \psi_{(ij)} (x_i, x_j) \prod_{k \in \mathbf{Nb}(x_i)\setminus \{x_j\}} \mu_{k\rightarrow i}(x_i)$\;
+    \Indm calculate max-marginals $\bar{p}_{x_i}(x_i) = \prod_{j\in \mathbf{Nb}(x_j)} \mu_{j\rightarrow i} (x_i)\ \forall i \in V$\;
+    retrieve MAP assignment
+    \caption{Max-product algorithm for trees}
+\end{algorithm}
+
+In general, to recover variable assignments we should store ```argmax``` for each message:
+
+$$
+\delta_{i\rightarrow j} = \text{argmax}_{x_i} \psi_{(ij)} (x_i, x_j) \prod_{k \in \mathbf{Nb}(x_i)\setminus \{x_j\}} \mu_{k\rightarrow i}(x_i)
+\tag{2.6}
+$$
+
+And then backtrack as follows: $x_n^* \in \text{argmax}_{x_n} \bar{p}_{x_n}(x_n)$ and $x_j^* = \delta_{j\rightarrow i} (x_i^*),\ \forall j \in V\setminus\{n\}$.
+
+### 2.2.3 Max-sum
+
+\forceindent In sum-product and max-product algorithms we perform alot of factor and message multiplications, and it potentially can lead to numerical overflow or underflow. The first way to avoid it is just to normalize each message, while another one is more sophisticated and requires to perform all computations in log space. We will consider the second case. Taking $log$ from both parts of Max-product equations, we get the following:
+
+$$
+\begin{aligned}
+\tilde{m}_{i\rightarrow j} (x_j) & = \max_{x_i}
+\left\{
+\ln \psi_{ij} (x_i, x_j) + \sum_{k \in \mathbf{Nb}(x_i)\setminus \{x_j\}} \tilde{m}_{k\rightarrow i}(x_i)
+\right\} \\
+\bar{p}_{x_i}(x_i) & = \exp
+\left\{
+\sum_{j\in \mathbf{Nb}(x_i)} \tilde{m}_{k\rightarrow i} (x_i)
+\right\}
+\end{aligned}
+\tag{2.7}
+$$
+
+All multiplications are now replaced by additions, and equations take the so-called MS form.
+
+### 2.2.4 Complexity and correctness
+
+**Theorem 2.2.** The BP algorithm is exact if the topology of the PGM is that of a tree or a chain.
+
+\forceindent Recall, that every type of inference in graphical models is $NP$-hard. Suppose, that each variable has $k$ number of statets. If we know nothing about the structure of the joint probability, evaluation of desired marginal probability distribution would require $\mathcal{O}(k^{|V|})$ computations, where $|V|$ - number of nodes in the graph. Fortunately, factorization of the sum as we did in Eq. (2.5) reduces the total complexity to $\mathcal{O}(|V|\ k^2)$.
+
+\forceindent So, BP algorithm is exact and efficient agorithm for performing inference in loop-free probabalistic graphical models.
+
+## 2.3 Loopy belief propagation
+
+\forceindent Since BP equations are local we can apply them to PGMs with cycles. The corresponding modification is called *loopy belief propagation*. Unfortunately, it may **not converge** on graphs with cycles, however, in many cases it provides quite good approximation, because BP fixed-points correspond to local stationary points of the Bethe free energy. There is still the question of what update rules we use to recompute the messages. We illustrate a parallel schedule by the example of Max-product equations.
+
+\begin{algorithm}[H]
+    \DontPrintSemicolon
+    \SetAlgorithmName{Algorithm 2.3}
+    \SetAlgoLined
+    \text{\textbf{Input:}} PGM, $t_{max}$\;
+    \text{\textbf{Output:}} MAP assignment\;
+    initialize all messages $\mu_{i\rightarrow j}^{(0)} = 1\ \forall(i,j)\in E$\;
+    \For{$t = 1, \dots, t_{max}$}
+    {
+        $\mu_{i\rightarrow j}^{(t+1)} = \max_{x_i} \psi_{(ij)} (x_i, x_j) \prod_{k \in \mathbf{Nb}(x_i)\setminus \{x_j\}} \mu_{k\rightarrow i}^{(t)}(x_i)$
+    }
+    compute max-marginals $\bar{p}_{x_i}(x_i) = \prod_{j\in \mathbf{Nb}(x_j)} \mu_{j\rightarrow i} (x_i)\ \forall i \in V$\;
+    retrieve MAP assignment
+    \caption{Loopy belief propagation (max-product)}
+\end{algorithm}
+
+Other schedules for message-passing are possible [8,9].
+
+*References*
+
+1. D. Koller and N. Friedman, "Probabilistic Graphical Models: Principles and Techniques". The MIT Press, 2009.
+2. J. Yedidia, W. Freeman and Y. Weiss, "Understanding belief propagation and its generalizations". 2001.
+3. F. Pernkopf, R. Peharz and S. Tschiatschek, "Introduction to Probabilistic Graphical Models". 2014.
+4. M. Wainwright and M. Jordan "Graphical Models, Exponential Families, and Variational Inference". 2008.
+5. C. Sutton and A. McCallum, "An Introduction to Conditional Random Fields". 2012.
+6. J. Yedidia, W. Freeman, "Constructing Free-Energy Approximations and Generalized Belief Propagation Algorithms". 2005.
+7. F. Kschischang, B. Frey and H. Loeliger, "Factor Graphs and The Sum-Product Algorithm". IEEE Transactions on Information Theory, 2001.
+8. C. Sutton and A. McCallum, “Improved dynamic schedules for belief propagation”. 2007.
+9. G. Elidan, I. McGraw and D. Koller, "Residual belief propagation: Informed scheduling for asynchronous message passing". 2006.
+10. Y. Weiss, "Correctness of Local Probability Propagation in Graphical Models with Loops". 2000.
+11. F. Jensen, "An introduction to Bayesian networks. UCL Press Limited". 1996.
+
+\pagebreak
+
+# 3 BP for PCST
+
+## 3.1 Local constraints
+
+## 3.2 Equations
+
+*References*
+
+1. M. Bayati, C. Borgs, A. Braunstein, J. Chayes, A. Ramezanpour, and R. Zecchina, "Statistical Mechanics of Steiner Trees". PRL, 2008.
+2. M. Bayati, A. Braunstein, and R. Zecchina, "A rigorous analysis of the cavity equations for the minimum spanning tree". Journal of Mathematical Physics, 2008.
+3. I. Biazzo, "Performance of a cavity-method-based algorithm for the prize-collecting Steiner tree problem on graphs". PRL, 2012.
+
+\pagebreak
+
+# 4 Additional features
+
+## 4.1 Prize-Collecting Steiner forest problem
+
+*References*
+
+1. N. Tuncbag, A. Braunstein, et al., "Simultaneous Reconstruction of Multiple Signaling Pathways via the Prize-Collecting Steiner Forest Problem". Journal of Computational Biology, 2013.
+
+\pagebreak
+
+# 5 Workflow with the package
