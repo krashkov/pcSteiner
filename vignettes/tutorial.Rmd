@@ -79,3 +79,17 @@ The Prize-Collecting Steiner tree problem reduces to the Steiner problem when al
 
 \pagebreak
 
+# 2 Belief propagation
+
+\forceindent The approximation algorithm for PCST problem internally utilizes loopy belief propagation equations. In this section we remind several basic definitions in probability theory and statistics which are crucial for understanding the material presented in the later sections of this vignette document.
+
+\forceindent For more details in implementation of belief propagation and loopy belief propagation we refer to this \href{https://github.com/krashkov/Belief-Propagation}{\underline{GitHub repository}}.
+
+## 2.1 Preliminaries: graphical models and statistical inference
+
+\forceindent \textit{Graphical model} is a compact representation of a collection of probability distributions. It consists of a graph $G = (V, E)$, directed or undirected, where each vertex $v \in V$ is accosiated with a random variable. Edges of the graph represent statistical relationship between nodes. There are several main types of graphical models:
+
+* Bayesian networks
+* Markov random fields
+* Factor graphs
+
