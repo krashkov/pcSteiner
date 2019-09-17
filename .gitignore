@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+pcSteiner.Rproj
+/revdep/.cache.rds
+.DS_Store
+
+doc
+Meta
