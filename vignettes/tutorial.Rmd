@@ -1,0 +1,81 @@
+---
+title: "'pcSteiner' vignette"
+author: "Aleksei Krasikov"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+header-includes:
+   - \usepackage{amsmath}
+   - \usepackage[ruled, vlined]{algorithm2e}
+   - \usepackage{hyperref}
+   - \hypersetup{
+         colorlinks=true,
+         linkcolor=blue,
+         filecolor=magenta,      
+         urlcolor=blue,
+     }
+   - \newcommand{\forceindent}{\leavevmode{\parindent=1em\indent}}
+   - \renewcommand{\thealgocf}{}
+   - \usepackage{etoc}
+   - \usepackage{blindtext}
+vignette: >
+  %\VignetteIndexEntry{tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+\vspace{15px}
+
+\leftskip3cm\relax
+\rightskip3cm\relax
+This vignette document sets the following goals: expound the Prize-Collecting Steiner tree problem, give some background on Belief propagation algorithm, explain in details how BP is used for solving the Prize-Collecting Steiner tree problem, discuss several additional features for graph analysis and illustrate a typical workflow with the package.
+
+\vspace{25px}
+
+\leftskip0cm\relax
+\rightskip0cm\relax
+\tableofcontents
+\etocsettocstyle{\subsection*{This Chapter contains:}}{\noindent\rule{\linewidth}{.4pt}}
+
+\pagebreak
+
+# 1 Steiner tree problem
+
+\forceindent The Steiner problem is a classical combinatorial optimisation problem. The interest in it arises from a wide range of practical applications in the areas such as chemistry, biology, telecommunication and many more. For example, the goal of the Steiner tree problem in network analysis in systems biology is to detect biological relationship between a set of distinguished proteins, metabolites or genes.
+
+\forceindent Let $G = (V, E)$ be an undirected graph, where $V$ is a vertex set and $E$ is an edge set. Suppose that graph is weighted, i.e. graph with a cost function $c: E \rightarrow R_+$. Given a required node subset $T \subseteq V$ the *Steiner tree problem* for $T$ in $G$ is to find connected, minimum cost subgraph $G_1 = (V_1, E_1)$ with $T \subseteq V_1 \subseteq V$ and $E_1 \subseteq E$. Note, that resulting subgraph is necessary a tree. The elements of $T$ are called *terminals* and elements of $V_1 \setminus T$ are *Steiner nodes*.
+
+|    **Problem 1.1 (Steiner tree problem).**
+|         *Input:* an undirected graph $G$, a set $T \subseteq V$ and weights $c:E \rightarrow R_+$
+|         *Output:* a minimum weight tree connecting all vertices of $T$ in $G$
+
+**Theorem 1.1.** The Steiner tree problem is $NP$-complete, even for unit weights (Karp 1972).
+
+\forceindent There are two special cases of the Steiner tree problem. If $|T| = 2$, then the problem is reduced to the Shortest path problem between a pair of vertices in a graph, which is in the class $P$. The second special case to be considered is when $|T| = |V|$ and the problem is reduced to finding Minimum spanning tree, which is again solvable in polynomial time.
+
+\forceindent In many cases nodes have an additional numerical value, which represent their significance. That is where the *Prize-Collecting Steiner tree problem* arises. Roughly speaking, the goal is to find a subgraph $G_1$ in $G$ connecting all the terminals $T$ with the most expensive nodes and least expensive edges. Note, that the result will be a tree as in the Steiner problem.
+
+|    **Problem 1.2 (Prize-Collecting Steiner tree problem).**
+|         *Input:* an undirected graph $G$, a set $T \subseteq V$, costs $c:E \rightarrow R_+$ and prizes $p: V \rightarrow R_+$
+|         *Output:* find a tree $G_1$ by minimizing the following function $f(G_1) = \sum_{e \in E_1} c_e + \lambda \sum_{i \notin V_1} p_i$
+
+Since a constant value does not change a maximum, we can subtract a total node prizes from objective function $C = \sum_{i \in V} p_i$.
+
+|    **Problem 1.2 (revisited).**
+|         *Input:* an undirected graph $G$, a set $T \subseteq V$, costs $c:E \rightarrow R_+$ and prizes $p: V \rightarrow R_+$
+|         *Output:* find a tree $G_1$ by minimizing the following function $f(G_1) = \sum_{e \in E_1} c_e - \lambda \sum_{i \in V_1} p_i$
+
+The Prize-Collecting Steiner tree problem reduces to the Steiner problem when all prizes are equal to one, so it is at least NP-complete. Thus, we do not expect to have an efficient algorithm for solving PCST problem.
+
+*References*
+
+1. B. Korte and J. Vygen, "Combinatorial Optimization. Theory and Algorithms". Springer, 2008.
+
+\pagebreak
+
