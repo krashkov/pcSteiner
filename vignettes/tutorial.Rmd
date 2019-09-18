@@ -258,11 +258,11 @@ All multiplications are now replaced by additions, and equations take the so-cal
     initialize all messages $\mu_{i\rightarrow j}^{(0)} = 1\ \forall(i,j)\in E$\;
     \For{$t = 1, \dots, t_{max}$}
     {
-        $\mu_{i\rightarrow j}^{(t+1)} = \max_{x_i} \psi_{(ij)} (x_i, x_j) \prod_{k \in \mathbf{Nb}(x_i)\setminus \{x_j\}} \mu_{k\rightarrow i}^{(t)}(x_i)$
+        $\tilde{m}_{i\rightarrow j}^{t+1} (x_j) = \max_{x_i}\left\{\ln \psi_{ij} (x_i, x_j) + \sum_{k \in \mathbf{Nb}(x_i)\setminus \{x_j\}} \tilde{m}_{k\rightarrow i}^t(x_i)\right\}$
     }
-    compute max-marginals $\bar{p}_{x_i}(x_i) = \prod_{j\in \mathbf{Nb}(x_j)} \mu_{j\rightarrow i} (x_i)\ \forall i \in V$\;
+    compute max-marginals $\bar{p}_{x_i}(x_i) = \exp\left\{\sum_{j\in \mathbf{Nb}(x_i)} \tilde{m}_{k\rightarrow i}^{t_{max}+1} (x_i)\right\}$\;
     retrieve MAP assignment
-    \caption{Loopy belief propagation (max-product)}
+    \caption{Loopy belief propagation (max-sum)}
 \end{algorithm}
 
 Other schedules for message-passing are possible [8,9].
@@ -292,9 +292,9 @@ Other schedules for message-passing are possible [8,9].
 |         *Output:* find $r$-rooted tree $G_1 = (V_1, E_1)$ with depth $D$ by minimizing the following function $f(G_1) =$
 |         $\sum_{e \in E_1} c_e + \lambda \sum_{i \notin V_1} p_i$
 
-## 3.1 Local constraints
+## 3.1 Graphical model
 
-\forceindent The algorithm starts with a graph $G = (V, E)$ and root $r$. Each node $i \in V$ is assigned a couple of variable $(p_i, d_i)$, which has the following meaning:
+\forceindent Each node $i \in V$ is assigned a couple of variable $(p_i, d_i)$, which has the following meaning:
 
 \begin{itemize}
     \item $d_i \in \{1, ..., D\}$ denotes the distance to the root $r$
@@ -311,18 +311,44 @@ p_i = j \Rightarrow p_j \neq \{*\}
 \tag{3.1}
 $$
 
-Should we introduce the auxiliary function $f_{ij} = \mathbbm{1}_{p_i=j \Rightarrow d_i=d_j+1\wedge p_j\neq\{*\}}$, the system above will be equivalent to the following expression:
+Should we introduce the auxiliary function $f_{ij} = \mathbbm{1}_{p_i=j \Rightarrow d_i=d_j+1\wedge p_j\neq\{*\}}$, the system above will be equivalent to the following expression: $g_{ij} = f_{ij}f_{ji}$
+
+\forceindent Let $c_{i*} = \lambda b_i$, then the Problem 3.1 can be rewritten as follows:
 
 $$
-g_{ij} = f_{ij}f_{ji}
+\min\{\mathcal{H}(\mathbf{p}): (\mathbf{d}, \mathbf{p}) \in \mathcal{T}\}
 \tag{3.2}
+$$
+
+where $\mathbf{d} = \{d_i\}_{i \in V}$, $\mathbf{p}=\{p_i\}_{i \in V}$, $\mathcal{T} = \{(\mathbf{d}, \mathbf{p}): g_{ij} = 1\ \forall (ij) \in E\}$ and $\mathcal{H}(\mathbf{p}) = \sum_{i \in V} c_{ip_i}$.
+
+\forceindent The corresponding probability distribution is:
+
+$$
+P(\mathbf{d}, \mathbf{p})
+=
+Z^{-1}\prod_{(ij)\in E}g_{ij}\prod_{i\in V}e^{-c_{ip_i}}
+\tag{3.3}
+$$
+
+## 3.2 Message-passing equations
+
+\forceindent The loopy belief propagation update rule for messages (in max-sum form) is as follows:
+
+$$
+m_{i\rightarrow j}^{t+1} (d_j, p_j)
+=
+\max_{d_i, p_i: g_{ij}=1}\left\{
+    - c_{ip_i}
+    + \sum_{k \in \partial i\setminus j} m^t_{ki} (d_i, p_i) + C_{ij}
+\right\}
 $$
 
 *References*
 
 1. M. Bayati, C. Borgs, A. Braunstein, J. Chayes, A. Ramezanpour, and R. Zecchina, "Statistical Mechanics of Steiner Trees". PRL, 2008.
 2. M. Bayati, A. Braunstein, and R. Zecchina, "A rigorous analysis of the cavity equations for the minimum spanning tree". Journal of Mathematical Physics, 2008.
-3. I. Biazzo, "Performance of a cavity-method-based algorithm for the prize-collecting Steiner tree problem on graphs". PRL, 2012.
+3. I. Biazzo, A. Braunstein and R. Zecchina, "Performance of a cavity-method-based algorithm for the prize-collecting Steiner tree problem on graphs". PRL, 2012.
 
 \pagebreak
 
