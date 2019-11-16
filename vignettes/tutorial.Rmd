@@ -16,7 +16,6 @@ header-includes:
    - \newcommand{\forceindent}{\leavevmode{\parindent=1em\indent}}
    - \renewcommand{\thealgocf}{}
    - \usepackage{etoc}
-   - \usepackage{blindtext}
    - \usepackage{bbm}
 vignette: >
   %\VignetteIndexEntry{tutorial}
@@ -247,7 +246,7 @@ All multiplications are now replaced by additions, and equations take the so-cal
 
 ## 2.3 Loopy belief propagation
 
-\forceindent Since BP equations are local we can apply them to PGMs with cycles. The corresponding modification is called *loopy belief propagation*. Unfortunately, it may **not converge** on graphs with cycles, however, in many cases it provides quite good approximation, because BP fixed-points correspond to local stationary points of the Bethe free energy. There is still the question of what update rules we use to recompute the messages. We illustrate a parallel schedule by the example of Max-product equations.
+\forceindent Since BP equations are local we can apply them to PGMs with cycles. The corresponding modification is called *loopy belief propagation*. Unfortunately, it may **not converge** on graphs with cycles, however, in many cases it provides quite good approximation, because BP fixed-points correspond to local stationary points of the Bethe free energy. There is still the question of what update rules we use to recompute the messages. We illustrate a parallel schedule by the example of Max-sum equations.
 
 \begin{algorithm}[H]
     \DontPrintSemicolon
@@ -285,16 +284,16 @@ Other schedules for message-passing are possible [8,9].
 
 # 3 BP for PCST
 
-\forceindent This section is dedicated to the algorithm for solving the Prize-Collecting Steiner tree problem via belief propagation, introduced by the working group of Bayati, Braunstein et al. [1-3]. The *D-bounded rooted PCST* is being considered, which means, that the goal is to solve PCST problem with given root $r$ and maximum depth $D$. This section provides only an overview of the algorithm and does not cover material in a great detail.
+\forceindent This section is dedicated to the algorithm for solving the Prize-Collecting Steiner tree problem via belief propagation introduced by the working group of Bayati, Braunstein et al. [1-3]. The *D-bounded rooted PCST* is being considered which means that the goal is to solve PCST problem with given root $r$ and maximum depth $D$. This section provides only an overview of the algorithm and does not cover material in great details.
 
 |    **Problem 3.1 (D-bounded rooted PCST).**
 |         *Input:* an undirected graph $G$, a set $T \subseteq V$, costs $c:E \rightarrow R_+$, prizes $p: V \rightarrow R_+$, root $r \in V$, depth $D$
-|         *Output:* find $r$-rooted tree $G_1 = (V_1, E_1)$ with depth $D$ by minimizing the following function $f(G_1) =$
+|         *Output:* $r$-rooted tree $G_1 = (V_1, E_1)$ with depth $D$ which minimizes the following function $f(G_1) =$
 |         $\sum_{e \in E_1} c_e + \lambda \sum_{i \notin V_1} p_i$
 
 ## 3.1 Graphical model
 
-\forceindent Each node $i \in V$ is assigned a couple of variable $(p_i, d_i)$, which has the following meaning:
+\forceindent Each node $i \in V$ is assigned to a couple of variables $(p_i, d_i)$, which has the following meaning:
 
 \begin{itemize}
     \item $d_i \in \{1, ..., D\}$ denotes the distance to the root $r$
@@ -304,20 +303,26 @@ Other schedules for message-passing are possible [8,9].
 Variables $(p_i, d_i)$ can not take arbitrary values, that is, they have to satisfy the following constraints $\forall (ij) \in E$:
 
 $$
+\text{if } p_i = j \Rightarrow
 \begin{cases}
-p_i = j \Rightarrow d_i = d_j + 1\\
-p_i = j \Rightarrow p_j \neq \{*\}
+d_i = d_j + 1\\
+p_j \neq \{*\}
 \end{cases}
 \tag{3.1}
 $$
 
-Should we introduce the auxiliary function $f_{ij} = \mathbbm{1}_{p_i=j \Rightarrow d_i=d_j+1\wedge p_j\neq\{*\}}$, the system above will be equivalent to the following expression: $g_{ij} = f_{ij}f_{ji}$
+Should we introduce the auxiliary function $f_{ij} = \mathbbm{1}_{p_i=j \Rightarrow d_i=d_j+1\wedge p_j\neq\{*\}} = 1 - \delta_{p_i, j}\left[1-\delta_{d_i,d_j+1}\left(1-\delta_{p_j,*}\right)\right]$, the constraints will take the form:
+
+$$
+g_{ij} = f_{ij}f_{ji} = 1
+\tag{3.2}
+$$
 
 \forceindent Let $c_{i*} = \lambda b_i$, then the Problem 3.1 can be rewritten as follows:
 
 $$
 \min\{\mathcal{H}(\mathbf{p}): (\mathbf{d}, \mathbf{p}) \in \mathcal{T}\}
-\tag{3.2}
+\tag{3.3}
 $$
 
 where $\mathbf{d} = \{d_i\}_{i \in V}$, $\mathbf{p}=\{p_i\}_{i \in V}$, $\mathcal{T} = \{(\mathbf{d}, \mathbf{p}): g_{ij} = 1\ \forall (ij) \in E\}$ and $\mathcal{H}(\mathbf{p}) = \sum_{i \in V} c_{ip_i}$.
@@ -328,20 +333,145 @@ $$
 P(\mathbf{d}, \mathbf{p})
 =
 Z^{-1}\prod_{(ij)\in E}g_{ij}\prod_{i\in V}e^{-c_{ip_i}}
-\tag{3.3}
+\tag{3.4}
 $$
 
 ## 3.2 Message-passing equations
 
-\forceindent The loopy belief propagation update rule for messages (in max-sum form) is as follows:
+\forceindent In this section we are going to introduce message update rules for loop-free graphs and then generalise the equations. Using the previous results the following holds:
 
 $$
-m_{i\rightarrow j}^{t+1} (d_j, p_j)
+m_{i\rightarrow j} (d_j, p_j)
 =
 \max_{d_i, p_i: g_{ij}=1}\left\{
     - c_{ip_i}
-    + \sum_{k \in \partial i\setminus j} m^t_{ki} (d_i, p_i) + C_{ij}
+    + \sum_{k \in \partial i\setminus j} m_{k\rightarrow i} (d_i, p_i)
 \right\}
+\tag{3.5}
+$$
+
+Let us consider the following cases:
+
+$$
+\begin{aligned}
+m_{i\rightarrow j} (d_j, p_j)
+&=
+\begin{cases}
+\max_{d_i, p_i:\ g_{ij}=1}\left\{.\right\},   & p_j = i\\
+\max_{d_i, p_i:\ g_{ij}=1}\left\{.\right\},   & p_j = *\\
+\max_{d_i, p_i:\ g_{ij}=1}\left\{.\right\},   & p_j \neq \left\{i, *\right\}
+\end{cases}\\
+&=
+\begin{cases}
+\max_{d_i, p_i:\ g_{ij}=1 \Leftrightarrow (d_i=d_j-1\wedge p_i\neq \{j, *\}) }\left\{.\right\},                        & p_j = i\\
+\max_{d_i, p_i:\ g_{ij}=1 \Leftrightarrow p_i\neq j} \left\{.\right\},                                               & p_j = *\\
+\max_{d_i, p_i:\ g_{ij}=1 \Leftrightarrow (d_i=d_j+1\wedge p_i=j)\vee p_i\neq \{j, *\}\vee p_i = *}\left\{.\right\},   & p_j \neq \left\{i, *\right\}
+\end{cases}\\
+&=
+\begin{cases}
+\max_{d_i=d_j-1\wedge p_i\neq \left\{j, *\right\}}\left\{.\right\}                 & p_j = i\\
+\max[\max_{d_i,p_i\neq \{j, *\}}\left\{.\right\};\max_{d_i,p_i=*}\left\{.\right\}] & p_j = *\\
+\max\left[
+\max_{d_i=d_j+1\wedge p_i=j}\left\{.\right\};
+\max[
+\max_{d_i,p_i\neq \{j, *\}}\left\{.\right\};
+\max_{d_i,p_i=*}\left\{.\right\}
+]
+\right]                                                                            & p_j \neq \left\{i, *\right\}
+\end{cases}\\
+&=
+\begin{cases}
+\max_{d_i=d_j-1\wedge p_i\neq \left\{j, *\right\}}\left\{.\right\}                 & p_j = i\\
+\max_{d_i}\max[\max_{p_i\neq \{j, *\}}\left\{.\right\};\max_{p_i=*}\left\{.\right\}] & p_j = *\\
+\max\left[
+\max_{d_i=d_j+1\wedge p_i=j}\left\{.\right\};
+\max_{d_i}\max[
+\max_{p_i\neq \{j, *\}}\left\{.\right\};
+\max_{p_i=*}\left\{.\right\}
+]
+\right]                                                                            & p_j \neq \left\{i, *\right\}
+\end{cases}\\
+\end{aligned}
+$$
+
+\noindent Lets introduce new variables: $A_{ij}^{d} = \max_{p_i\neq \left\{j, *\right\}}\left\{.\right\}|_{d_i = d}$, $B^d_{ij} = \max_{p_i=*}\left\{.\right\}|_{d_i = d}$, $C_{ij}^d = \max_{p_i=j}\left\{.\right\}|_{d_i = d}$ Hence:
+
+$$
+\begin{aligned}
+m_{i\rightarrow j} (d_j, p_j)
+&=
+\begin{cases}
+A_{ij}^{d_j-1}                             & p_j = i\\
+\max_{d_i}\max[A_{ij}^{d_i}; B_{ij}^{d_i}] & p_j = *\\
+\max\left[
+C_{ij}^{d_j+1};
+\max_{d_i}
+\max[A_{ij}^{d_i};
+B_{ij}^{d_i}
+]
+\right]                                    & p_j \neq \left\{i, *\right\}
+\end{cases}\\
+&=
+\begin{cases}
+A_{ij}^{d_j-1}                            & p_j = i\\
+D_{ij}                                    & p_j = *\\
+\max\left[ C_{ij}^{d_j+1}; D_{ij} \right] & p_j \neq \left\{i, *\right\}
+\end{cases}\\
+&=
+\begin{cases}
+A_{ij}^{d_j-1}      & p_j = i\\
+D_{ij}              & p_j = *\\
+E_{ij}^{d_j}        & p_j \neq \left\{i, *\right\}
+\end{cases}
+\end{aligned}
+\tag{3.7}
+$$
+
+\noindent Now we need to derive update rules for $A, B, C$:
+
+$$
+\begin{aligned}
+A_{ij}^{d} = \max_{p_i\neq \left\{j, *\right\}}\left\{.\right\}|_{d_i = d}
+&=
+\max_{p_i\neq \left\{j, *\right\}}\left\{
+    - c_{ip_i}
+    + \sum_{l \in \partial i\setminus j} m_{l\rightarrow i} (d, p_i)
+\right\}\\
+&=
+\max_{k\in\mathbf{Nb}(i)\setminus j}\left\{
+    - c_{ik}
+    + \sum_{l \in \partial i\setminus j} m_{l\rightarrow i} (d, k)
+\right\}\\
+&=
+\sum_{k\in\mathbf{Nb}(i)\setminus j} E_{kj}
++
+\max_{k\in\mathbf{Nb}(i)\setminus j}\left\{
+    - c_{ik} - E^d_{kj} + A^{d-1}_{kj}
+\right\}
+\end{aligned}
+\tag{3.8}
+$$
+
+$$
+\begin{aligned}
+B^d_{ij} = \max_{p_i=*}\left\{.\right\}|_{d_i = d}
+&=
+- c_{i*} + \sum_{k \in \partial i\setminus j} m_{k\rightarrow i} (d, *)\\
+& =
+-c_{i*} + \sum_{k \in \partial i\setminus j}D_{kj}
+\end{aligned}
+\tag{3.9}
+$$
+
+$$
+\begin{aligned}
+C_{ij}^d = \max_{p_i=j}\left\{.\right\}|_{d_i = d}
+&=
+- c_{ij} + \sum_{k \in \partial i\setminus j} m_{k\rightarrow i} (d, j) \\
+&=
+- c_{ij} + \sum_{k \in \partial i\setminus j} E_{kj}^d\\
+\end{aligned}
+\tag{3.10}
 $$
 
 *References*
