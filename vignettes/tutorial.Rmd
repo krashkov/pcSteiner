@@ -297,7 +297,7 @@ Other schedules for message-passing are possible [8,9].
 
 \begin{itemize}
     \item $d_i \in \{1, ..., D\}$ denotes the distance to the root $r$
-    \item $p_i \in \partial i \cup \{*\}$, where $\partial i = \{j: (ij) \in E\}$ and $p_i = \{*\} \Leftrightarrow i \notin V_1$. It represents a parent of a node $i$.
+    \item $p_i \in \mathbf{Nb}(i) \cup \{*\}$, where $\mathbf{Nb}(i) = \{j: (ij) \in E\}$ and $p_i = \{*\} \Leftrightarrow i \notin V_1$. It represents a parent of a node $i$.
 \end{itemize}
 
 Variables $(p_i, d_i)$ can not take arbitrary values, that is, they have to satisfy the following constraints $\forall (ij) \in E$:
@@ -345,7 +345,7 @@ m_{i\rightarrow j} (d_j, p_j)
 =
 \max_{d_i, p_i: g_{ij}=1}\left\{
     - c_{ip_i}
-    + \sum_{k \in \partial i\setminus j} m_{k\rightarrow i} (d_i, p_i)
+    + \sum_{k \in \mathbf{Nb}(i) \setminus j} m_{k\rightarrow i} (d_i, p_i)
 \right\}
 \tag{3.5}
 $$
@@ -435,15 +435,15 @@ A_{ij}^{d} = \max_{p_i\neq \left\{j, *\right\}}\left\{.\right\}|_{d_i = d}
 &=
 \max_{p_i\neq \left\{j, *\right\}}\left\{
     - c_{ip_i}
-    + \sum_{l \in \partial i\setminus j} m_{l\rightarrow i} (d, p_i)
+    + \sum_{l \in \mathbf{Nb}(i) \setminus j} m_{l\rightarrow i} (d, p_i)
 \right\}\\
 &=
 \max_{k\in\mathbf{Nb}(i)\setminus j}\left\{
     - c_{ik}
-    + \sum_{l \in \partial i\setminus j} m_{l\rightarrow i} (d, k)
+    + \sum_{l \in \mathbf{Nb}(i) \setminus j} m_{l\rightarrow i} (d, k)
 \right\}\\
 &=
-\sum_{k\in\mathbf{Nb}(i)\setminus j} E_{kj}
+\sum_{k\in\mathbf{Nb}(i)\setminus j} E_{kj}^d
 +
 \max_{k\in\mathbf{Nb}(i)\setminus j}\left\{
     - c_{ik} - E^d_{kj} + A^{d-1}_{kj}
@@ -456,9 +456,9 @@ $$
 \begin{aligned}
 B^d_{ij} = \max_{p_i=*}\left\{.\right\}|_{d_i = d}
 &=
-- c_{i*} + \sum_{k \in \partial i\setminus j} m_{k\rightarrow i} (d, *)\\
+- c_{i*} + \sum_{k \in \mathbf{Nb}(i) \setminus j} m_{k\rightarrow i} (d, *)\\
 & =
--c_{i*} + \sum_{k \in \partial i\setminus j}D_{kj}
+-c_{i*} + \sum_{k \in \mathbf{Nb}(i) \setminus j}D_{kj}
 \end{aligned}
 \tag{3.9}
 $$
@@ -467,9 +467,9 @@ $$
 \begin{aligned}
 C_{ij}^d = \max_{p_i=j}\left\{.\right\}|_{d_i = d}
 &=
-- c_{ij} + \sum_{k \in \partial i\setminus j} m_{k\rightarrow i} (d, j) \\
+- c_{ij} + \sum_{k \in \mathbf{Nb}(i) \setminus j} m_{k\rightarrow i} (d, j) \\
 &=
-- c_{ij} + \sum_{k \in \partial i\setminus j} E_{kj}^d\\
+- c_{ij} + \sum_{k \in \mathbf{Nb}(i) \setminus j} E_{kj}^d\\
 \end{aligned}
 \tag{3.10}
 $$
