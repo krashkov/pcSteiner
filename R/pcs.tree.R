@@ -1,7 +1,6 @@
-pcs.tree <- function(graph, terminals) {
+pcs.tree <- function(graph, terminals, root, depth, max_iter, terminal_infty = 10000) {
 
         # Check graph
-
         if (is.null(graph))
                 stop("Error: Graph is Null")
 
@@ -17,10 +16,46 @@ pcs.tree <- function(graph, terminals) {
         if (is.null(E(graph)$costs))
                 stop("Error: Edges do not have costs")
 
-        # Check terminals
 
+        # Check terminals
         if (is.null(terminals) || is.na(terminals) || length(terminals) == 0)
                 stop("Error: Terminals not found")
+
+
+        # Set root
+        V(graph)$root       <- FALSE
+        V(graph)$root[root] <- TRUE
+
+
+        # Set terminal prizes
+        V(graph)$prizes[terminals] <- terminal_infty
+
+
+        # Initialize messages
+        A_new <- new.env()
+        E_new <- new.env()
+        F_new <- new.env()
+        B_new <- new.env()
+        D_new <- new.env()
+
+        initialize_messages(graph, depth)
+
+        A_old <- as.environment(as.list(A_new, all.names=TRUE))
+        E_old <- as.environment(as.list(E_new, all.names=TRUE))
+        F_old <- as.environment(as.list(E_new, all.names=TRUE))
+        B_old <- as.environment(as.list(E_new, all.names=TRUE))
+        D_old <- as.environment(as.list(E_new, all.names=TRUE))
+
+
+        # Run the algorithm
+        iter <- 0
+        while(TRUE) {
+                permutation <- sample(c(1:length(V(graph))))
+                iter <- iter + 1
+
+                if (iter >= max_iter)
+                        break
+        }
 
         return(0)
 }
