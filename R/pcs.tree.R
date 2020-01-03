@@ -1,4 +1,4 @@
-pcs.tree <- function(graph, terminals, root, depth, max_iter, terminal_infty = 10000) {
+pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_infty = 10000) {
 
         # Check graph
         if (is.null(graph))
@@ -52,7 +52,7 @@ pcs.tree <- function(graph, terminals, root, depth, max_iter, terminal_infty = 1
         while(TRUE) {
                 permutation <- sample(c(1:length(V(graph))))
 
-                #loop(graph, depth, permutation)
+                #loop(graph, lambda, depth, permutation)
 
                 iter <- iter + 1
 
