@@ -51,6 +51,9 @@ pcs.tree <- function(graph, terminals, root, depth, max_iter, terminal_infty = 1
         iter <- 0
         while(TRUE) {
                 permutation <- sample(c(1:length(V(graph))))
+
+                #loop(graph, depth, permutation)
+
                 iter <- iter + 1
 
                 if (iter >= max_iter)
