@@ -7,7 +7,7 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_i
         if (length(V(graph)) == 0 )
                 stop("Error: Graph does not contain vertices")
 
-        if (is.connected(graph))
+        if (! is.connected(graph))
                 stop("Error: The graph is not connected. Run pcs.forest instead")
 
         if (is.null(V(graph)$prizes))
@@ -32,19 +32,19 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_i
 
 
         # Initialize messages
-        A_new <- new.env()
-        E_new <- new.env()
-        F_new <- new.env()
-        B_new <- new.env()
-        D_new <- new.env()
+        A_new <<- new.env()
+        E_new <<- new.env()
+        F_new <<- new.env()
+        B_new <<- new.env()
+        D_new <<- new.env()
 
         initialize_messages(graph, depth)
 
-        A_old <- as.environment(as.list(A_new, all.names=TRUE))
-        E_old <- as.environment(as.list(E_new, all.names=TRUE))
-        F_old <- as.environment(as.list(E_new, all.names=TRUE))
-        B_old <- as.environment(as.list(E_new, all.names=TRUE))
-        D_old <- as.environment(as.list(E_new, all.names=TRUE))
+        A_old <<- as.environment(as.list(A_new, all.names=TRUE))
+        E_old <<- as.environment(as.list(E_new, all.names=TRUE))
+        F_old <<- as.environment(as.list(E_new, all.names=TRUE))
+        B_old <<- as.environment(as.list(E_new, all.names=TRUE))
+        D_old <<- as.environment(as.list(E_new, all.names=TRUE))
 
 
         # Run the algorithm
@@ -52,7 +52,13 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_i
         while(TRUE) {
                 permutation <- sample(c(1:length(V(graph))))
 
-                #loop(graph, lambda, depth, permutation)
+                loop(graph, lambda, depth, c(3,1,2,5,4))
+
+                A_old <<- as.environment(as.list(A_new, all.names=TRUE))
+                E_old <<- as.environment(as.list(E_new, all.names=TRUE))
+                F_old <<- as.environment(as.list(E_new, all.names=TRUE))
+                B_old <<- as.environment(as.list(E_new, all.names=TRUE))
+                D_old <<- as.environment(as.list(E_new, all.names=TRUE))
 
                 iter <- iter + 1
 

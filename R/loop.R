@@ -8,23 +8,24 @@ loop <- function (graph, lambda, depth, permutation) {
                 sumE <- rep(0, depth)
                 sumD <- 0
 
-                findA <- new.env()
+                findA <<- new.env()
                 initialize_findA(depth = depth, size = length(neighbors(graph, vert)))
 
                 # Compute sum of E's and D's
                 neighbor_idx <- 1
                 for (neighbor in as.integer(neighbors(graph, vert))) {
-                        key_in  <- paste(neighbor, vert, collapse="")
-                        key_out <- paste(vert, neighbor, collapse="")
+                        key_in  <- paste(c(neighbor, vert), collapse="")
+                        key_out <- paste(c(vert, neighbor), collapse="")
 
                         # Compute sum of E's
                         for (d in 2:depth) {
                                 sumE[d] <- sumE[d] + E_old[[key_in]][d]
 
-                                findA$values[[d]][neighbor_idx] <- - E(graph)$costs[get.edge.ids(graph, c(vert, neighbor))]
-                                                                   - E_old[[key_in]][d]
-                                                                   + A_old[[key_in]][d-1]
+                                findA$values[[d]][neighbor_idx] <- (- E(graph)$costs[get.edge.ids(graph, c(vert, neighbor))]
+                                                                    - E_old[[key_in]][d]
+                                                                    + A_old[[key_in]][d-1])
                         }
+                        sumE[0] <- sumE[0] + E_old[[key_in]][0]
 
                         # Compute sum of D's
                         sumD <- sumD + D_old[[key_in]]
@@ -35,20 +36,20 @@ loop <- function (graph, lambda, depth, permutation) {
                 # Compute new messages
                 neighbor_idx <- 1
                 for (neighbor in as.integer(neighbors(g, vert))) {
-                        key_in  <- paste(neighbor, vert, collapse="")
-                        key_out <- paste(vert, neighbor, collapse="")
+                        key_in  <- paste(c(neighbor, vert), collapse="")
+                        key_out <- paste(c(vert, neighbor), collapse="")
 
                         # Compute B
-                        B_new[[key_out]] <- - lambda*V(graph)$prizes[vert]
-                                            + sumD
-                                            - D_old[[key_in]][d]
+                        B_new[[key_out]] <- (- lambda * V(graph)$prizes[vert]
+                                             + sumD
+                                             - D_old[[key_in]][d])
 
                         # Compute maxA
                         maxA <- -Inf
                         for (d in 1:depth) {
-                                A_new[[key_out]][d] <-   sumE[d]
-                                                       - E_old[[key_in]][d]
-                                                       + max(findA$values[[d]][-neighbor_idx])
+                                A_new[[key_out]][d] <- (  sumE[d]
+                                                        - E_old[[key_in]][d]
+                                                        + max(findA$values[[d]][-neighbor_idx]))
                                 maxA <- max(maxA, A_new[[key_out]][d])
                         }
 
@@ -59,9 +60,9 @@ loop <- function (graph, lambda, depth, permutation) {
                         C <- -Inf
                         for (d in depth:2) {
                                 E_new[[key_out]][d] <- max(D_new[[key_out]], C)
-                                C <- - lambda*V(graph)$prizes[vert]
-                                     + sumE[d]
-                                     - E_old[[key_in]][d]
+                                C <- (- E(graph)$costs[get.edge.ids(graph, c(vert, neighbor))]
+                                      + sumE[d]
+                                      - E_old[[key_in]][d])
                         }
                         E_new[[key_out]][1] <- D_new[[key_out]]
 
