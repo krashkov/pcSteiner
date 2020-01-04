@@ -1,8 +1,22 @@
 loop <- function (graph, lambda, depth, permutation) {
 
         for (vert in permutation) {
+                # Update root
                 if (V(graph)$root[vert] == TRUE) {
-                        # todo
+
+                        for (neighbor in as.integer(neighbors(graph, vert))) {
+                                key_out <- paste(c(vert, neighbor), collapse="")
+
+                                for (d in 1:depth) {
+                                        E_new[[key_out]][d] <- 0
+                                        A_new[[key_out]][d] <- -Inf
+                                }
+                                A_new[[key_out]][1] <- 0
+
+                                B_new[[key_out]] <- -Inf
+                                D_new[[key_out]] <- 0
+                        }
+
                 }
 
                 sumE <- rep(0, depth)
