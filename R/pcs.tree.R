@@ -61,7 +61,7 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_i
                         break
         }
 
-        #get_tree(graph)
+        graph <- get_tree(graph, depth)
 
-        return(0)
+        return(graph)
 }
