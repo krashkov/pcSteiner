@@ -37,14 +37,15 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_i
         F_new <<- new.env()
         B_new <<- new.env()
         D_new <<- new.env()
+        G     <<- new.env()
 
         initialize_messages(graph, depth)
 
         A_old <<- as.environment(as.list(A_new, all.names=TRUE))
         E_old <<- as.environment(as.list(E_new, all.names=TRUE))
-        F_old <<- as.environment(as.list(E_new, all.names=TRUE))
-        B_old <<- as.environment(as.list(E_new, all.names=TRUE))
-        D_old <<- as.environment(as.list(E_new, all.names=TRUE))
+        F_old <<- as.environment(as.list(F_new, all.names=TRUE))
+        B_old <<- as.environment(as.list(B_new, all.names=TRUE))
+        D_old <<- as.environment(as.list(D_new, all.names=TRUE))
 
 
         # Run the algorithm
@@ -52,19 +53,15 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_i
         while(TRUE) {
                 permutation <- sample(c(1:length(V(graph))))
 
-                loop(graph, lambda, depth, c(3,1,2,5,4))
-
-                A_old <<- as.environment(as.list(A_new, all.names=TRUE))
-                E_old <<- as.environment(as.list(E_new, all.names=TRUE))
-                F_old <<- as.environment(as.list(E_new, all.names=TRUE))
-                B_old <<- as.environment(as.list(E_new, all.names=TRUE))
-                D_old <<- as.environment(as.list(E_new, all.names=TRUE))
+                loop(graph, lambda, depth, permutation)
 
                 iter <- iter + 1
 
                 if (iter >= max_iter)
                         break
         }
+
+        #get_tree(graph)
 
         return(0)
 }
