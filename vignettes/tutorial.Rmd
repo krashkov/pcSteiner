@@ -394,34 +394,34 @@ m_{i\rightarrow j} (d_j, p_j)
 \end{aligned}
 $$
 
-\noindent Lets introduce new variables: $A_{ij}^{d} = \max_{p_i\neq \left\{j, *\right\}}\left\{.\right\}|_{d_i = d}$, $B^d_{ij} = \max_{p_i=*}\left\{.\right\}|_{d_i = d}$, $C_{ij}^d = \max_{p_i=j}\left\{.\right\}|_{d_i = d}$ Hence:
+\noindent Lets introduce new variables: $A_{i\rightarrow j}^{d} = \max_{p_i\neq \left\{j, *\right\}}\left\{.\right\}|_{d_i = d}$, $B^d_{i\rightarrow j} = \max_{p_i=*}\left\{.\right\}|_{d_i = d}$, $C_{i\rightarrow j}^d = \max_{p_i=j}\left\{.\right\}|_{d_i = d}$ Hence:
 
 $$
 \begin{aligned}
 m_{i\rightarrow j} (d_j, p_j)
 &=
 \begin{cases}
-A_{ij}^{d_j-1}                             & p_j = i\\
-\max_{d_i}\max[A_{ij}^{d_i}; B_{ij}^{d_i}] & p_j = *\\
+A_{i\rightarrow j}^{d_j-1}                             & p_j = i\\
+\max_{d_i}\max[A_{i\rightarrow j}^{d_i}; B_{i\rightarrow j}^{d_i}] & p_j = *\\
 \max\left[
-C_{ij}^{d_j+1};
+C_{i\rightarrow j}^{d_j+1};
 \max_{d_i}
-\max[A_{ij}^{d_i};
-B_{ij}^{d_i}
+\max[A_{i\rightarrow j}^{d_i};
+B_{i\rightarrow j}^{d_i}
 ]
 \right]                                    & p_j \neq \left\{i, *\right\}
 \end{cases}\\
 &=
 \begin{cases}
-A_{ij}^{d_j-1}                            & p_j = i\\
-D_{ij}                                    & p_j = *\\
-\max\left[ C_{ij}^{d_j+1}; D_{ij} \right] & p_j \neq \left\{i, *\right\}
+A_{i\rightarrow j}^{d_j-1}                            & p_j = i\\
+D_{i\rightarrow j}                                    & p_j = *\\
+\max\left[ C_{i\rightarrow j}^{d_j+1}; D_{i\rightarrow j} \right] & p_j \neq \left\{i, *\right\}
 \end{cases}\\
 &=
 \begin{cases}
-A_{ij}^{d_j-1}      & p_j = i\\
-D_{ij}              & p_j = *\\
-E_{ij}^{d_j}        & p_j \neq \left\{i, *\right\}
+A_{i\rightarrow j}^{d_j-1}      & p_j = i\\
+D_{i\rightarrow j}              & p_j = *\\
+E_{i\rightarrow j}^{d_j}        & p_j \neq \left\{i, *\right\}
 \end{cases}
 \end{aligned}
 \tag{3.7}
@@ -431,7 +431,7 @@ $$
 
 $$
 \begin{aligned}
-A_{ij}^{d} = \max_{p_i\neq \left\{j, *\right\}}\left\{.\right\}|_{d_i = d}
+A_{i\rightarrow j}^{d} = \max_{p_i\neq \left\{j, *\right\}}\left\{.\right\}|_{d_i = d}
 &=
 \max_{p_i\neq \left\{j, *\right\}}\left\{
     - c_{ip_i}
@@ -443,10 +443,10 @@ A_{ij}^{d} = \max_{p_i\neq \left\{j, *\right\}}\left\{.\right\}|_{d_i = d}
     + \sum_{l \in \mathbf{Nb}(i) \setminus j} m_{l\rightarrow i} (d, k)
 \right\}\\
 &=
-\sum_{k\in\mathbf{Nb}(i)\setminus j} E_{kj}^d
+\sum_{k\in\mathbf{Nb}(i)\setminus j} E_{k\rightarrow j}^d
 +
 \max_{k\in\mathbf{Nb}(i)\setminus j}\left\{
-    - c_{ik} - E^d_{kj} + A^{d-1}_{kj}
+    - c_{ik} - E^d_{k\rightarrow j} + A^{d-1}_{k\rightarrow j}
 \right\}
 \end{aligned}
 \tag{3.8}
@@ -454,25 +454,55 @@ $$
 
 $$
 \begin{aligned}
-B^d_{ij} = \max_{p_i=*}\left\{.\right\}|_{d_i = d}
+B^d_{i\rightarrow j} = \max_{p_i=*}\left\{.\right\}|_{d_i = d}
 &=
 - c_{i*} + \sum_{k \in \mathbf{Nb}(i) \setminus j} m_{k\rightarrow i} (d, *)\\
 & =
--c_{i*} + \sum_{k \in \mathbf{Nb}(i) \setminus j}D_{kj}
+-c_{i*} + \sum_{k \in \mathbf{Nb}(i) \setminus j}D_{k\rightarrow j}
 \end{aligned}
 \tag{3.9}
 $$
 
 $$
 \begin{aligned}
-C_{ij}^d = \max_{p_i=j}\left\{.\right\}|_{d_i = d}
+C_{i\rightarrow j}^d = \max_{p_i=j}\left\{.\right\}|_{d_i = d}
 &=
 - c_{ij} + \sum_{k \in \mathbf{Nb}(i) \setminus j} m_{k\rightarrow i} (d, j) \\
 &=
-- c_{ij} + \sum_{k \in \mathbf{Nb}(i) \setminus j} E_{kj}^d\\
+- c_{ij} + \sum_{k \in \mathbf{Nb}(i) \setminus j} E_{k\rightarrow j}^d\\
 \end{aligned}
 \tag{3.10}
 $$
+
+Marginal distribution can be found as follows
+
+$$
+b(d_j, p_j) = - c_{jp_j} + \sum_{k \in \mathbf{Nb}(i)} m_{k \rightarrow j} (d_j, p_j)
+$$
+
+Lets consider the following cases:
+
+$$
+\begin{aligned}
+b(d_j, p_j)
+&=
+\begin{cases}
+- c_{ji} + \sum_{k \in \mathbf{Nb}(i)} m_{k \rightarrow j} (d_j, i),    & p_j = i \in \mathbf{Nb}(j)\\
+- c_{j*} + \sum_{k \in \mathbf{Nb}(i)} m_{k \rightarrow j} (d_j, *),    & p_j = \{*\}\\
+\end{cases}\\
+&=
+\begin{cases}
+\sum_{k\in\mathbf{Nb}(i)} E_{k\rightarrow j}^d + \left(- c_{ji} - E^d_{i\rightarrow j} + A^{d-1}_{i\rightarrow j}\right),   & p_j = i \in \mathbf{Nb}(j)\\
+- c_{j*} + \sum_{k \in \mathbf{Nb}(i)} D_{k \rightarrow j},                                                                 & p_j = \{*\}\\
+\end{cases}\\
+&=
+\begin{cases}
+F_{j \rightarrow i},   & p_j = i \in \mathbf{Nb}(j)\\
+G_{j \rightarrow i},   & p_j = \{*\}\\
+\end{cases}\\
+\end{aligned}
+$$
+
 
 *References*
 
