@@ -32,34 +32,43 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_i
 
 
         # Initialize messages
-        A_new <<- new.env()
-        E_new <<- new.env()
-        F_new <<- new.env()
-        B_new <<- new.env()
-        D_new <<- new.env()
-        G     <<- new.env()
+        messages_new <- initialize_messages(graph, depth)
 
-        initialize_messages(graph, depth)
+        A_new <- messages_new[[1]]
+        E_new <- messages_new[[2]]
+        F_new <- messages_new[[3]]
+        B_new <- messages_new[[4]]
+        D_new <- messages_new[[5]]
+        G     <- new.env()
 
-        A_old <<- as.environment(as.list(A_new, all.names=TRUE))
-        E_old <<- as.environment(as.list(E_new, all.names=TRUE))
-        F_old <<- as.environment(as.list(F_new, all.names=TRUE))
-        B_old <<- as.environment(as.list(B_new, all.names=TRUE))
-        D_old <<- as.environment(as.list(D_new, all.names=TRUE))
+        A_old <- as.environment(as.list(A_new, all.names=TRUE))
+        E_old <- as.environment(as.list(E_new, all.names=TRUE))
+        F_old <- as.environment(as.list(F_new, all.names=TRUE))
+        B_old <- as.environment(as.list(B_new, all.names=TRUE))
+        D_old <- as.environment(as.list(D_new, all.names=TRUE))
 
         # Run the algorithm
         iter <- 0
-        while(TRUE) {
+        while (TRUE) {
                 permutation <- sample(c(1:length(V(graph))))
 
-                #loop(graph, lambda, depth, permutation)
-                loop(graph, lambda, depth, c(5, 4, 2, 3))
+                messages_new <- loop(graph, lambda, depth, permutation,
+                                     A_new, E_new, F_new, B_new, D_new,
+                                     A_old, E_old, F_old, B_old, D_old,
+                                     G)
 
-                A_old <<- as.environment(as.list(A_new, all.names=TRUE))
-                E_old <<- as.environment(as.list(E_new, all.names=TRUE))
-                F_old <<- as.environment(as.list(F_new, all.names=TRUE))
-                B_old <<- as.environment(as.list(B_new, all.names=TRUE))
-                D_old <<- as.environment(as.list(D_new, all.names=TRUE))
+                A_new <- messages_new[[1]]
+                E_new <- messages_new[[2]]
+                F_new <- messages_new[[3]]
+                B_new <- messages_new[[4]]
+                D_new <- messages_new[[5]]
+                G     <- messages_new[[6]]
+
+                A_old <- as.environment(as.list(A_new, all.names=TRUE))
+                E_old <- as.environment(as.list(E_new, all.names=TRUE))
+                F_old <- as.environment(as.list(F_new, all.names=TRUE))
+                B_old <- as.environment(as.list(B_new, all.names=TRUE))
+                D_old <- as.environment(as.list(D_new, all.names=TRUE))
 
                 iter <- iter + 1
 
@@ -67,7 +76,7 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_i
                         break
         }
 
-        graph <- get_tree(graph, depth)
+        graph <- get_tree(graph, depth, A_old, E_old, F_old, B_old, D_old, G)
 
         return(graph)
 }

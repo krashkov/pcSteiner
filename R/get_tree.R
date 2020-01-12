@@ -1,4 +1,4 @@
-get_tree <- function (graph, depth) {
+get_tree <- function (graph, depth, A_old, E_old, F_old, B_old, D_old, G) {
 
         E(graph)$PCST <- FALSE
 
