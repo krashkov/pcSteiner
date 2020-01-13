@@ -12,6 +12,8 @@ initialize_messages <- function (graph, depth) {
                 key_dir <- paste(c(heads[i], tails[i]), collapse="")
                 key_rev <- paste(c(tails[i], heads[i]), collapse="")
 
+                # Initialization
+
                 A_new[[key_dir]] <- rep(0, depth)
                 A_new[[key_rev]] <- rep(0, depth)
 
@@ -26,6 +28,30 @@ initialize_messages <- function (graph, depth) {
 
                 D_new[[key_dir]] <- 0
                 D_new[[key_rev]] <- 0
+
+                # Adding random noise
+
+                B_new[[key_dir]] <- -runif(1)
+                B_new[[key_rev]] <- -runif(1)
+
+                for (d in 1:depth) {
+                        A_new[[key_dir]][d] <- -runif(1)
+                        A_new[[key_rev]][d] <- -runif(1)
+                }
+
+                D_new[[key_dir]] <- max(B_new[[key_dir]], max(A_new[[key_dir]]))
+                D_new[[key_rev]] <- max(B_new[[key_rev]], max(A_new[[key_rev]]))
+
+                for (d in 1:depth) {
+                        C_key_dir <- -runif(1)
+                        C_key_rev <- -runif(1)
+
+                        E_new[[key_dir]][d] <- max(C_key_dir, D_new[[key_dir]])
+                        E_new[[key_rev]][d] <- max(C_key_rev, D_new[[key_rev]])
+                }
+                E_new[[key_dir]][depth] <- D_new[[key_dir]]
+                E_new[[key_rev]][depth] <- D_new[[key_rev]]
+
         }
 
         messages_new <- list()
