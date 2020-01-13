@@ -16,3 +16,4 @@ VignetteBuilder: knitr
 License: GPL-3
 Repository: CRAN
 Encoding: UTF-8
+RoxygenNote: 7.0.2
