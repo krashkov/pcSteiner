@@ -17,6 +17,7 @@ header-includes:
    - \renewcommand{\thealgocf}{}
    - \usepackage{etoc}
    - \usepackage{bbm}
+   - \newcommand{\comm}[1]{}
 vignette: >
   %\VignetteIndexEntry{tutorial}
   %\VignetteEngine{knitr::rmarkdown}
@@ -47,9 +48,9 @@ This vignette document sets the following goals: expound the Prize-Collecting St
 
 # 1 Steiner tree problem
 
-\forceindent The Steiner problem is a classical combinatorial optimisation problem. The interest in it arises from a wide range of practical applications in the areas such as chemistry, biology, telecommunication and many more. For example, the goal of the Steiner tree problem in network analysis in systems biology is to detect biological relationship between a set of distinguished proteins, metabolites or genes.
+\forceindent The Steiner problem is a classical combinatorial optimisation problem. The interest in it arises from a wide range of practical applications in the areas such as chemistry, biology, telecommunication and many more. For example, the goal of the Steiner tree problem in systems biology is to detect biological relationship between a set of distinguished proteins, metabolites or genes.
 
-\forceindent Let $G = (V, E)$ be an undirected graph, where $V$ is a vertex set and $E$ is an edge set. Suppose that graph is weighted, i.e. graph with a cost function $c: E \rightarrow R_+$. Given a required node subset $T \subseteq V$ the *Steiner tree problem* for $T$ in $G$ is to find connected, minimum cost subgraph $G_1 = (V_1, E_1)$ with $T \subseteq V_1 \subseteq V$ and $E_1 \subseteq E$. Note, that resulting subgraph is necessary a tree. The elements of $T$ are called *terminals* and elements of $V_1 \setminus T$ are *Steiner nodes*.
+\forceindent Let $G = (V, E)$ be an undirected graph where $V$ is a vertex set and $E$ is an edge set. Suppose that graph is weighted, i.e. graph with a cost function $c: E \rightarrow R_+$. Given a required node subset $T \subseteq V$ the *Steiner tree problem* for $T$ in $G$ is to find connected, minimum cost subgraph $G_1 = (V_1, E_1)$ with $T \subseteq V_1 \subseteq V$ and $E_1 \subseteq E$. Note, that resulting subgraph is necessary a tree. The elements of $T$ are called *terminals* and elements of $V_1 \setminus T$ are *Steiner nodes*.
 
 |    **Problem 1.1 (Steiner tree problem).**
 |         *Input:* an undirected graph $G$, a set $T \subseteq V$ and weights $c:E \rightarrow R_+$
@@ -57,11 +58,11 @@ This vignette document sets the following goals: expound the Prize-Collecting St
 
 **Theorem 1.1.** The Steiner tree problem is $NP$-complete, even for unit weights (Karp 1972).
 
-\forceindent There are two special cases of the Steiner tree problem. If $|T| = 2$, then the problem is reduced to the Shortest path problem between a pair of vertices in a graph, which is in the class $P$. The second special case to be considered is when $|T| = |V|$ and the problem is reduced to finding Minimum spanning tree, which is again solvable in polynomial time.
+\forceindent There are two special cases of the Steiner tree problem. If $|T| = 2$, then the problem is reduced to the Shortest Path problem between a pair of vertices in a graph, which is in the class $P$. The second special case to be considered is when $|T| = |V|$ and the problem is reduced to finding Minimum Spanning tree, which is again solvable in polynomial time.
 
-\forceindent In many cases nodes have an additional numerical value, which represent their significance. That is where the *Prize-Collecting Steiner tree problem* arises. Roughly speaking, the goal is to find a subgraph $G_1$ in $G$ connecting all the terminals $T$ with the most expensive nodes and least expensive edges. Note, that the result will be a tree as in the Steiner problem.
+\forceindent In many cases nodes have an additional numerical value, which represent their significance. That is where the *Prize-Collecting Steiner Tree problem* arises. Roughly speaking, the goal is to find a subgraph $G_1$ in $G$ connecting all the terminals $T$ with the most expensive nodes and least expensive edges. Note, that the result will be a tree as in the Steiner problem.
 
-|    **Problem 1.2 (Prize-Collecting Steiner tree problem).**
+|    **Problem 1.2 (Prize-Collecting Steiner Tree problem).**
 |         *Input:* an undirected graph $G$, a set $T \subseteq V$, costs $c:E \rightarrow R_+$ and prizes $p: V \rightarrow R_+$
 |         *Output:* find a tree $G_1$ by minimizing the following function $f(G_1) = \sum_{e \in E_1} c_e + \lambda \sum_{i \notin V_1} p_i$
 
@@ -71,7 +72,7 @@ Since a constant value does not change a maximum, we can subtract a total node p
 |         *Input:* an undirected graph $G$, a set $T \subseteq V$, costs $c:E \rightarrow R_+$ and prizes $p: V \rightarrow R_+$
 |         *Output:* find a tree $G_1$ by minimizing the following function $f(G_1) = \sum_{e \in E_1} c_e - \lambda \sum_{i \in V_1} p_i$
 
-The Prize-Collecting Steiner tree problem reduces to the Steiner problem when all prizes are equal to one, so it is at least NP-complete. Thus, we do not expect to have an efficient algorithm for solving PCST problem.
+The Prize-Collecting Steiner Tree problem reduces to the Steiner problem when all prizes are equal to one, so it is at least NP-complete. Thus, we do not expect to have an efficient algorithm for solving PCST problem.
 
 *References*
 
@@ -95,7 +96,7 @@ The Prize-Collecting Steiner tree problem reduces to the Steiner problem when al
 
 ### 2.1.1 Bayesian networks
 
-\forceindent \textit{Bayesian network} is a directed graph. Each random variable $x_i$ has an associated conditional probability distribution or local probabilistic model. A direct edge from $x_i$ to $x_j$ represents a conditional probability of a random variable, given its parents $P(x_i|x_j)$. Bayesian network defines a joint probability distribution:
+\forceindent \textit{Bayesian network} is a directed graph. Each node represents random variable $x_i$ which has an associated conditional probability distribution or local probabilistic model. A direct edge from $x_i$ to $x_j$ represents a conditional probability of a random variable given its parents $P(x_i|x_j)$. Bayesian network defines a joint probability distribution in the following way:
 
 $$
 P(x_1, \dots, x_n) = \prod_{i=1}^{n}P(x_i\ |\ \mathbf{Par}(x_i))
@@ -104,7 +105,7 @@ $$
 
 ### 2.1.2 Markov random fields
 
-\forceindent \textit{Markov random fields} are based on undirected graphical models. As in a Bayesian network, nodes in a graph represent variables. An associated probability distribution factorizes into functions, each function associated with a clique of the graph:
+\forceindent \textit{Markov random field} is based on undirected graphical models. As in a Bayesian network, nodes in a graph represent variables. An associated probability distribution factorizes into functions, each function associated with a clique of the graph:
 
 $$
 P(x_1, ..., x_n) = Z^{-1} \prod_{C \in \mathcal{C}} \psi_C(x_C)
@@ -126,7 +127,7 @@ where $Z$ is a constant chosen to ensure that the distribution is normalized. Th
     \item Further, $f_1, \dots ,f_n$ are positive functions and the number of functions equals the number of nodes in $F = \{F_1, \dots , F_n\}$. Each node $F_i$ is associated with the corresponding function $f_i$ and each $f_i$ is a function of the neighboring variables of $F_i$, i.e. $f_i = f_i(\mathbf{Nb}(F_i))$.
 \end{itemize}
 
-The joint probability distribution of a factor graph of $N$ variables with $M$ functions factorizes as follows:
+Joint probability distribution of a factor graph of $N$ variables with $M$ functions factorizes as follows:
 
 $$
 P(\{x\}) = Z^{-1} \prod_{a=1}^M \psi(\{x\}_a)
@@ -191,7 +192,9 @@ The generalization of the procedure above is exactly belief propagation or sum-p
 
 ### 2.2.2 Max-product
 
-\forceindent The Max-product algorithm computes the *max-marginal* at each node of a graph $\bar{p}_{x_i}(x_i) = \max_{x_j: j \neq i} p_{\{x\}} (\{x\})$. If there are no ties at each node, then $x_i^* \in \text{argmax}_{x_i} \bar{p}_{x_i}(x_i)$ is the unique global MAP assignment.
+\forceindent The Max-product algorithm computes the *max-marginal* at each node of a graph $\bar{p}_{x_i}(x_i) = \max_{x_j: j \neq i} p_{\{x\}} (\{x\})$.
+
+**Proposition 2.1.** If there are no ties at each node, then $(x_1^*, ..., x_n^*)$, where $x_i^* = \text{argmax}_{x_i} \bar{p}_{x_i}(x_i)$ is a unique global MAP assignment.
 
 \forceindent The idea behind Max-product is nearly the same as for Sum-product: instead of summing over the states of other nodes, we should find the ```max``` over those states. The ```max``` operator passes through variables just as the summation sign did.
 
@@ -207,18 +210,9 @@ The generalization of the procedure above is exactly belief propagation or sum-p
     \caption{Max-product algorithm for trees}
 \end{algorithm}
 
-In general, to recover variable assignments we should store ```argmax``` for each message:
-
-$$
-\delta_{i\rightarrow j} = \text{argmax}_{x_i} \psi_{(ij)} (x_i, x_j) \prod_{k \in \mathbf{Nb}(x_i)\setminus \{x_j\}} \mu_{k\rightarrow i}(x_i)
-\tag{2.6}
-$$
-
-And then backtrack as follows: $x_n^* \in \text{argmax}_{x_n} \bar{p}_{x_n}(x_n)$ and $x_j^* = \delta_{j\rightarrow i} (x_i^*),\ \forall j \in V\setminus\{n\}$.
-
 ### 2.2.3 Max-sum
 
-\forceindent In sum-product and max-product algorithms we perform alot of factor and message multiplications, and it potentially can lead to numerical overflow or underflow. The first way to avoid it is just to normalize each message, while another one is more sophisticated and requires to perform all computations in log space. We will consider the second case. Taking $log$ from both parts of Max-product equations, we get the following:
+\forceindent In sum-product and max-product algorithms we perform a lot of factor and message multiplications and it potentially can lead to numerical overflow or underflow. One way to avoid it is just to normalize each message, while the other one is more sophisticated and requires to perform all computations in a log space. We will consider the latter. Taking $log$ from both parts of Max-product equations, we get the following:
 
 $$
 \begin{aligned}
@@ -231,7 +225,7 @@ $$
 \sum_{j\in \mathbf{Nb}(x_i)} \tilde{m}_{k\rightarrow i} (x_i)
 \right\}
 \end{aligned}
-\tag{2.7}
+\tag{2.6}
 $$
 
 All multiplications are now replaced by additions, and equations take the so-called MS form.
@@ -246,7 +240,7 @@ All multiplications are now replaced by additions, and equations take the so-cal
 
 ## 2.3 Loopy belief propagation
 
-\forceindent Since BP equations are local we can apply them to PGMs with cycles. The corresponding modification is called *loopy belief propagation*. Unfortunately, it may **not converge** on graphs with cycles, however, in many cases it provides quite good approximation, because BP fixed-points correspond to local stationary points of the Bethe free energy. There is still the question of what update rules we use to recompute the messages. We illustrate a parallel schedule by the example of Max-sum equations.
+\forceindent Since BP equations are local we can apply them to PGMs with cycles. The corresponding modification is called *loopy belief propagation*. There is still the question of what update rules we use to recompute the messages. We illustrate a parallel schedule by the example of Max-sum equations.
 
 \begin{algorithm}[H]
     \DontPrintSemicolon
@@ -265,6 +259,10 @@ All multiplications are now replaced by additions, and equations take the so-cal
 \end{algorithm}
 
 Other schedules for message-passing are possible [8,9].
+
+### 2.3.1 Complexity and correctness
+
+\forceindent Unfortunately, Loopy belief propagation may **not converge** on graphs with cycles, however, in many cases it provides quite good approximation, because BP fixed-points correspond to local stationary points of the Bethe free energy. 
 
 *References*
 
@@ -293,10 +291,10 @@ Other schedules for message-passing are possible [8,9].
 
 ## 3.1 Graphical model
 
-\forceindent Each node $i \in V$ is assigned to a couple of variables $(p_i, d_i)$, which has the following meaning:
+\forceindent The problem is modelled using pairwise Markov Random Field. Each node $i \in V$ is assigned to a couple of variables $(p_i, d_i)$, which has the following meaning:
 
 \begin{itemize}
-    \item $d_i \in \{1, ..., D\}$ denotes the distance to the root $r$
+    \item $d_i \in \{1, ..., D\}$ denotes the distance to the given root $r$
     \item $p_i \in \mathbf{Nb}(i) \cup \{*\}$, where $\mathbf{Nb}(i) = \{j: (ij) \in E\}$ and $p_i = \{*\} \Leftrightarrow i \notin V_1$. It represents a parent of a node $i$.
 \end{itemize}
 
@@ -311,23 +309,23 @@ p_j \neq \{*\}
 \tag{3.1}
 $$
 
-Should we introduce the auxiliary function $f_{ij} = \mathbbm{1}_{p_i=j \Rightarrow d_i=d_j+1\wedge p_j\neq\{*\}} = 1 - \delta_{p_i, j}\left[1-\delta_{d_i,d_j+1}\left(1-\delta_{p_j,*}\right)\right]$, the constraints will take the form:
+Should we introduce the auxiliary function $f_{ij} = \mathbbm{1}_{p_i=j \Rightarrow d_i=d_j+1\wedge p_j\neq\{*\}} = 1 - \delta_{p_i, j}\left[1-\delta_{d_i,d_j+1}\left(1-\delta_{p_j,*}\right)\right]$, the constraints will take the following form:
 
 $$
 g_{ij} = f_{ij}f_{ji} = 1
 \tag{3.2}
 $$
 
-\forceindent Let $c_{i*} = \lambda b_i$, then the Problem 3.1 can be rewritten as follows:
+If $c_{i*} = \lambda b_i$, then the Problem 3.1 can be rewritten as follows:
 
 $$
-\min\{\mathcal{H}(\mathbf{p}): (\mathbf{d}, \mathbf{p}) \in \mathcal{T}\}
+\min\{\mathcal{H}(\mathbf{p}) = \sum_{i \in V} c_{ip_i}: (\mathbf{d}, \mathbf{p}) \in \mathcal{T}\}
 \tag{3.3}
 $$
 
-where $\mathbf{d} = \{d_i\}_{i \in V}$, $\mathbf{p}=\{p_i\}_{i \in V}$, $\mathcal{T} = \{(\mathbf{d}, \mathbf{p}): g_{ij} = 1\ \forall (ij) \in E\}$ and $\mathcal{H}(\mathbf{p}) = \sum_{i \in V} c_{ip_i}$.
+where $\mathbf{d} = \{d_i\}_{i \in V}$, $\mathbf{p}=\{p_i\}_{i \in V}$, $\mathcal{T} = \{(\mathbf{d}, \mathbf{p}): g_{ij} = 1\ \forall (ij) \in E\}$.
 
-\forceindent The corresponding probability distribution is:
+\forceindent The corresponding MRF probability distribution can be written in the following way:
 
 $$
 P(\mathbf{d}, \mathbf{p})
@@ -336,9 +334,11 @@ Z^{-1}\prod_{(ij)\in E}g_{ij}\prod_{i\in V}e^{-c_{ip_i}}
 \tag{3.4}
 $$
 
-## 3.2 Message-passing equations
+The key idea of the method is to apply message passing equations (2.6) to maximize probability distribution (3.4) or equivalently to find a solution to (3.3). 
 
-\forceindent In this section we are going to introduce message update rules for loop-free graphs and then generalise the equations. Using the previous results the following holds:
+## 3.2 Message-passing equations for loop-free graphs
+
+\forceindent In this section we are going to introduce message update rules for loop-free graphs. Taking into consideration max-sum equations (2.6):
 
 $$
 m_{i\rightarrow j} (d_j, p_j)
@@ -350,7 +350,7 @@ m_{i\rightarrow j} (d_j, p_j)
 \tag{3.5}
 $$
 
-Let us consider the following cases:
+Messages will be computed separately for each of the following groups of $p_j$:
 
 $$
 \begin{aligned}
@@ -394,7 +394,7 @@ m_{i\rightarrow j} (d_j, p_j)
 \end{aligned}
 $$
 
-\noindent Lets introduce new variables: $A_{i\rightarrow j}^{d} = \max_{p_i\neq \left\{j, *\right\}}\left\{.\right\}|_{d_i = d}$, $B^d_{i\rightarrow j} = \max_{p_i=*}\left\{.\right\}|_{d_i = d}$, $C_{i\rightarrow j}^d = \max_{p_i=j}\left\{.\right\}|_{d_i = d}$ Hence:
+\noindent Introducing new variables $A_{i\rightarrow j}^{d} = \max_{p_i\neq \left\{j, *\right\}}\left\{.\right\}|_{d_i = d}$, $B^d_{i\rightarrow j} = \max_{p_i=*}\left\{.\right\}|_{d_i = d}$, $C_{i\rightarrow j}^d = \max_{p_i=j}\left\{.\right\}|_{d_i = d}$ allows us to rewrite messages in more convenient way:
 
 $$
 \begin{aligned}
@@ -427,7 +427,7 @@ E_{i\rightarrow j}^{d_j}        & p_j \neq \left\{i, *\right\}
 \tag{3.7}
 $$
 
-\noindent Now we need to derive update rules for $A, B, C$:
+\noindent A bit of analysis reveals update rules for $A, B, C$:
 
 $$
 \begin{aligned}
@@ -474,13 +474,14 @@ C_{i\rightarrow j}^d = \max_{p_i=j}\left\{.\right\}|_{d_i = d}
 \tag{3.10}
 $$
 
-Marginal distribution can be found as follows
+By analogy with (2.6) one can derive equation for computing marginal distribution of node $x_j$:
 
 $$
 b(d_j, p_j) = - c_{jp_j} + \sum_{k \in \mathbf{Nb}(i)} m_{k \rightarrow j} (d_j, p_j)
+\tag{3.11}
 $$
 
-Lets consider the following cases:
+Consideration of different cases for $p_j$ simplify the overall analysis:
 
 $$
 \begin{aligned}
@@ -501,17 +502,41 @@ F_{j \rightarrow i},   & p_j = i \in \mathbf{Nb}(j)\\
 G_{j \rightarrow i},   & p_j = \{*\}\\
 \end{cases}\\
 \end{aligned}
+\tag{3.12}
 $$
 
+## 3.3 Message-passing equations for graphs with cycles
+
+### 3.3.1 Implementation details
+
+**Noise**
+
+\forceindent Taking into account Proposition 2.1 we need somehow to resolve a ties, thus according to [3] a random noise $\xi \in \text{Uniform}[0,1]$ is added to messages at the initialization step. Consequently, we can assume that a solution will be unique. Note, that variables still have to satisfy the equations (3.7).
+
+**Stopping criteria**
+
+\forceindent The following stopping criterias are utilized:
+
+* ```max_iter``` parameter is required, so the program will abort the computation as soon as number of iteration exceed the given value.
+* ```eps``` parameter is required. If maximum of the message difference between two consecutive iterations will be less, than given value, then the program will stop.
+
+**Returning value**
+
+\forceindent Like in many other optimization problems error may increase during computation, that is why the program will return a tree with the least expensive cost among all which was obtained until the last iteration.
+
+### 3.3.2 Complete algorithm
 
 *References*
 
 1. M. Bayati, C. Borgs, A. Braunstein, J. Chayes, A. Ramezanpour, and R. Zecchina, "Statistical Mechanics of Steiner Trees". PRL, 2008.
 2. M. Bayati, A. Braunstein, and R. Zecchina, "A rigorous analysis of the cavity equations for the minimum spanning tree". Journal of Mathematical Physics, 2008.
 3. I. Biazzo, A. Braunstein and R. Zecchina, "Performance of a cavity-method-based algorithm for the prize-collecting Steiner tree problem on graphs". PRL, 2012.
+4. A. Braunstein, R. Zecchina, "Learning by Message Passing in Networks of Discrete Synapses". PRL, 2006.
+5. A. Braunstein, A. Muntoni, "Practical optimization of Steiner Trees via the cavity method". ArXiv, 2016.
 
 \pagebreak
 
+\comm{
 # 4 Additional features
 
 ## 4.1 Prize-Collecting Steiner forest problem
@@ -521,5 +546,44 @@ $$
 1. N. Tuncbag, A. Braunstein, et al., "Simultaneous Reconstruction of Multiple Signaling Pathways via the Prize-Collecting Steiner Forest Problem". Journal of Computational Biology, 2013.
 
 \pagebreak
+}
 
-# 5 Workflow with the package
+# 4 Workflow with the package
+
+```{r echo = TRUE, results = 'hide'}
+suppressMessages(library(pcSteiner))
+
+g <- graph('Bull')
+
+# Cost of 2-3 edge is 10
+E(g)$costs  <- c(3, 3, 10, 3, 3)
+V(g)$prizes <- c(2, 2, 2, 2, 2)
+
+terminals <- c(4, 5)
+```
+
+Run the analysis
+
+```{r}
+res_edges <- pcs.tree(
+        graph=g,
+        terminals=terminals,
+        lambda=1,
+        root=1,
+        depth=5,
+        eps=1e-04,
+        max_iter=10,
+        terminal_infty=10000
+)
+```
+
+Plot graph
+
+```{r}
+V(g)$color            <- "gray"
+V(g)$color[terminals] <- "red"
+
+E(g)$color            <- "gray"
+E(g)$color[res_edges] <- "red"
+plot(g)
+```
