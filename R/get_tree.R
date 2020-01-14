@@ -1,6 +1,7 @@
-get_tree <- function (graph, depth, A_old, E_old, F_old, B_old, D_old, G) {
+get_tree <- function (graph, lambda, depth, msg_old, iter) {
 
         E(graph)$PCST <- FALSE
+        cost          <- 0
 
         for (vert in as.integer(V(graph))) {
 
@@ -12,20 +13,29 @@ get_tree <- function (graph, depth, A_old, E_old, F_old, B_old, D_old, G) {
 
                         for (neighbor in as.integer(neighbors(graph, vert))) {
                                 key_out <- paste(c(vert, neighbor), collapse="")
+
                                 for (d in 1:depth) {
-                                        if (F_old[[key_out]][d] >= maxF_value) {
-                                                maxF_value  <- F_old[[key_out]][d]
+                                        if (msg_old$F[[key_out]][d] >= maxF_value) {
+                                                maxF_value  <- msg_old$F[[key_out]][d]
                                                 maxF_vertex <- neighbor
                                         }
                                 }
                         }
 
-                        if (maxF_value > G[[as.character(vert)]]) {
+                        if (maxF_value > msg_old$G[[as.character(vert)]]) {
                                 E(graph)$PCST[get.edge.ids(graph, c(vert, maxF_vertex))] <- TRUE
+                                cost <- cost + E(graph)$costs[get.edge.ids(graph, c(vert, maxF_vertex))]
+                        } else {
+                                cost <- cost + lambda * V(graph)$prizes[vert]
                         }
                 }
 
         }
 
-        return(graph)
+        treeEdges_and_cost <- list()
+
+        treeEdges_and_cost[[1]] <- E(graph)$PCST
+        treeEdges_and_cost[[2]] <- cost
+
+        return(treeEdges_and_cost)
 }

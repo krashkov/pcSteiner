@@ -1,4 +1,9 @@
-pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_infty = 10000) {
+####------------------------------------- Documentation -------------------------------------####
+#'
+#'
+#' @export
+####------------------------------------- End Documentation -------------------------------------####
+pcs.tree <- function(graph, terminals, lambda, root, depth, eps, max_iter, terminal_infty = 10000) {
 
         # Check graph
         if (is.null(graph))
@@ -32,51 +37,35 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, max_iter, terminal_i
 
 
         # Initialize messages
-        messages_new <- initialize_messages(graph, depth)
+        msg_old <- initialize_messages(graph, depth, TRUE)
+        msg_new <- initialize_messages(graph, depth, FALSE)
 
-        A_new <- messages_new[[1]]
-        E_new <- messages_new[[2]]
-        F_new <- messages_new[[3]]
-        B_new <- messages_new[[4]]
-        D_new <- messages_new[[5]]
-        G     <- new.env()
-
-        A_old <- as.environment(as.list(A_new, all.names=TRUE))
-        E_old <- as.environment(as.list(E_new, all.names=TRUE))
-        F_old <- as.environment(as.list(F_new, all.names=TRUE))
-        B_old <- as.environment(as.list(B_new, all.names=TRUE))
-        D_old <- as.environment(as.list(D_new, all.names=TRUE))
 
         # Run the algorithm
         iter <- 0
         while (TRUE) {
                 permutation <- sample(c(1:length(V(graph))))
 
-                messages_new <- loop(graph, lambda, depth, permutation,
-                                     A_new, E_new, F_new, B_new, D_new,
-                                     A_old, E_old, F_old, B_old, D_old,
-                                     G)
+                msg_new <- loop(graph, lambda, depth, msg_old, msg_new, permutation)
+                tol     <- compute_tol(graph, depth, msg_new, msg_old)
+                msg_old <- msg_new
 
-                A_new <- messages_new[[1]]
-                E_new <- messages_new[[2]]
-                F_new <- messages_new[[3]]
-                B_new <- messages_new[[4]]
-                D_new <- messages_new[[5]]
-                G     <- messages_new[[6]]
+                iter    <- iter + 1
 
-                A_old <- as.environment(as.list(A_new, all.names=TRUE))
-                E_old <- as.environment(as.list(E_new, all.names=TRUE))
-                F_old <- as.environment(as.list(F_new, all.names=TRUE))
-                B_old <- as.environment(as.list(B_new, all.names=TRUE))
-                D_old <- as.environment(as.list(D_new, all.names=TRUE))
+                treeEdges_and_cost <- get_tree(graph, lambda, depth, msg_old, iter)
+                treeEdges <- treeEdges_and_cost[[1]]
+                cost      <- treeEdges_and_cost[[2]]
 
-                iter <- iter + 1
-
-                if (iter >= max_iter)
+                if (iter >= max_iter) {
+                        generate_report(graph, treeEdges, tol, iter, cost)
                         break
+                }
+
+                if (tol <= eps) {
+                        generate_report(graph, treeEdges, tol, iter, cost)
+                        break
+                }
         }
 
-        graph <- get_tree(graph, depth, A_old, E_old, F_old, B_old, D_old, G)
-
-        return(graph)
+        return(treeEdges)
 }
