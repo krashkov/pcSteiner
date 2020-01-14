@@ -555,9 +555,9 @@ suppressMessages(library(pcSteiner))
 
 g <- graph('Bull')
 
-# Cost of 2-3 edge is 10
-E(g)$costs  <- c(3, 3, 10, 3, 3)
-V(g)$prizes <- c(2, 2, 2, 2, 2)
+# Prize for 1-st node is 10
+E(g)$costs  <- c(3, 3, 3, 3, 3)
+V(g)$prizes <- c(10, 2, 2, 2, 2)
 
 terminals <- c(4, 5)
 ```
@@ -569,7 +569,7 @@ res_edges <- pcs.tree(
         graph=g,
         terminals=terminals,
         lambda=1,
-        root=1,
+        root=3,
         depth=5,
         eps=1e-04,
         max_iter=10,
