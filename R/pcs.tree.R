@@ -5,35 +5,16 @@
 ####------------------------------------- End Documentation -------------------------------------####
 pcs.tree <- function(graph, terminals, lambda, root, depth, eps, max_iter, terminal_infty = 10000) {
 
-        # Check graph
-        if (is.null(graph))
-                stop("Error: Graph is Null")
-
-        if (length(V(graph)) == 0 )
-                stop("Error: Graph does not contain vertices")
-
-        if (! is.connected(graph))
-                stop("Error: The graph is not connected. Run pcs.forest instead")
-
-        if (is.null(V(graph)$prizes))
-                stop("Error: Vertices do not have prizes")
-
-        if (is.null(E(graph)$costs))
-                stop("Error: Edges do not have costs")
-
-
-        # Check terminals
-        if (is.null(terminals) || is.na(terminals) || length(terminals) == 0)
-                stop("Error: Terminals not found")
-
+        # Check input
+        checkInput_res <- check_input(graph, terminals, lambda, root, depth, eps, max_iter)
 
         # Set root
         V(graph)$root       <- FALSE
-        V(graph)$root[root] <- TRUE
+        V(graph)$root[checkInput_res$root_id] <- TRUE
 
 
         # Set terminal prizes
-        V(graph)$prizes[terminals] <- terminal_infty
+        V(graph)$prizes[checkInput_res$terminal_id] <- terminal_infty
 
 
         # Initialize messages
@@ -42,30 +23,31 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, eps, max_iter, termi
 
 
         # Run the algorithm
-        iter <- 0
+        iter     <- 0
+
+        treeData_min       <- list()
+        treeData_min$cost  <- +Inf
+        treeData_min$edges <- rep(F, length(E(graph)))
+
         while (TRUE) {
                 permutation <- sample(c(1:length(V(graph))))
 
-                msg_new <- loop(graph, lambda, depth, msg_old, msg_new, permutation)
-                tol     <- compute_tol(graph, depth, msg_new, msg_old)
-                msg_old <- msg_new
+                msg_new  <- loop(graph, lambda, depth, msg_old, msg_new, permutation)
+                tol      <- compute_tol(graph, depth, msg_new, msg_old)
+                treeData <- get_tree(graph, lambda, depth, msg_old, iter)
 
+                msg_old <- msg_new
                 iter    <- iter + 1
 
-                treeEdges_and_cost <- get_tree(graph, lambda, depth, msg_old, iter)
-                treeEdges <- treeEdges_and_cost[[1]]
-                cost      <- treeEdges_and_cost[[2]]
+                #if (treeData$cost < treeData_min$cost && ) {
+                #        treeData_min <- treeData
+                #}
 
-                if (iter >= max_iter) {
-                        generate_report(graph, treeEdges, tol, iter, cost)
-                        break
-                }
-
-                if (tol <= eps) {
-                        generate_report(graph, treeEdges, tol, iter, cost)
+                if (iter >= max_iter || tol <= eps) {
+                        treeData_min$iter <- iter
                         break
                 }
         }
 
-        return(treeEdges)
+        return(treeData_min)
 }

@@ -32,10 +32,9 @@ get_tree <- function (graph, lambda, depth, msg_old, iter) {
 
         }
 
-        treeEdges_and_cost <- list()
+        treeData       <- list()
+        treeData$edges <- E(graph)$PCST
+        treeData$cost  <- cost
 
-        treeEdges_and_cost[[1]] <- E(graph)$PCST
-        treeEdges_and_cost[[2]] <- cost
-
-        return(treeEdges_and_cost)
+        return(treeData)
 }
