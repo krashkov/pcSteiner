@@ -1,9 +1,10 @@
 Package: pcSteiner
 Type: Package
-Version: 0.1.0
-Date: 2019-09-12
-Title: 
-Description: 
+Version: 1.0.0
+Date: 2020-01-26
+Title: Package for solving the Prize-Collecting Steiner Tree problem
+Description: This package provides several functions for solving the
+    Prize-Collecting Steiner Tree problem via message passing approach
 Author: Aleksei Krasikov <krasikov.as@phystech.edu>
 Maintainer: Aleksei Krasikov <krasikov.as@phystech.edu>
 URL: https://github.com/krashkov/pcSteiner
