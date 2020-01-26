@@ -1,5 +1,36 @@
-####------------------------------------- Documentation -------------------------------------####
+####--------------------------------------- Documentation ---------------------------------------####
+#' Solve the Prize-Collecting Steiner Tree problem
 #'
+#' @description Solve the Prize-Collecting Steiner Tree problem.
+#'
+#' @usage pcs.tree(graph, terminals, lambda, root, depth, eps, max_iter, terminal_infty=10000)
+#'
+#' @param graph an igraph graph
+#' @param terminals a numeric or character vector.
+#' @param lambda a numeric parameter.
+#' @param root a numeric or character scalar.
+#' @param depth a numeric scalar.
+#' @param eps a numeric scalar.
+#' @param max_iter a numeric scalar; specifies maximum number of iterations.
+#' @param terminal_infty a numeric scalar.
+#'
+#' @return Returns a list with cost and edges of the final tree.
+#'
+#' @examples
+#' g <- graph('Bull')
+#' E(g)$costs  <- c(3, 3, 3, 3, 3)
+#' V(g)$prizes <- c(10, 2, 2, 2, 2)
+#' treeData <- pcs.tree(graph=g, terminals=c(4,5), lambda=1,
+#'                      root=3, depth=5, eps=-1, max_iter=10)
+#'
+#' @references 1. M. Bayati, C. Borgs, A. Braunstein, J. Chayes, A. Ramezanpour, and R. Zecchina,
+#'                "Statistical Mechanics of Steiner Trees". PRL, 2008.
+#'
+#'             2. M. Bayati, A. Braunstein, and R. Zecchina, "A rigorous analysis of the cavity
+#'                equations for the minimum spanning tree". Journal of Mathematical Physics, 2008.
+#'
+#'             3. I. Biazzo, A. Braunstein and R. Zecchina, "Performance of a cavity-method-based
+#'                algorithm for the prize-collecting Steiner tree problem on graphs". PRL, 2012.
 #'
 #' @export
 ####------------------------------------- End Documentation -------------------------------------####
