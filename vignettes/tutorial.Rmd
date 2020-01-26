@@ -654,13 +654,13 @@ terminals <- c(4, 5)
 Run the analysis
 
 ```{r}
-res_edges <- pcs.tree(
+treeData <- pcs.tree(
         graph=g,
-        terminals=terminals,
+        terminals=c(4,5),
         lambda=1,
         root=3,
         depth=5,
-        eps=1e-04,
+        eps=-1,
         max_iter=10
 )
 ```
@@ -671,7 +671,7 @@ Plot graph
 V(g)$color            <- "gray"
 V(g)$color[terminals] <- "red"
 
-E(g)$color            <- "gray"
-E(g)$color[res_edges] <- "red"
+E(g)$color                 <- "gray"
+E(g)$color[treeData$edges] <- "red"
 plot(g)
 ```

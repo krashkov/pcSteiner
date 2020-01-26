@@ -8,8 +8,12 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, eps, max_iter, termi
         # Check input
         checkInput_res <- check_input(graph, terminals, lambda, root, depth, eps, max_iter)
 
+        # Temporary solution
+        g <- graph
+        V(g)$name  <- checkInput_res$vert_names
+
         # Set root
-        V(graph)$root       <- FALSE
+        V(graph)$root <- FALSE
         V(graph)$root[checkInput_res$root_id] <- TRUE
 
 
@@ -34,14 +38,18 @@ pcs.tree <- function(graph, terminals, lambda, root, depth, eps, max_iter, termi
 
                 msg_new  <- loop(graph, lambda, depth, msg_old, msg_new, permutation)
                 tol      <- compute_tol(graph, depth, msg_new, msg_old)
+                msg_old  <- msg_new
+
                 treeData <- get_tree(graph, lambda, depth, msg_old, iter)
 
-                msg_old <- msg_new
-                iter    <- iter + 1
+                tree <- subgraph.edges(g, treeData$edges)
+                if (  treeData$cost <= treeData_min$cost
+                    & is.connected(tree)
+                    & all(c(checkInput_res$root_name, checkInput_res$terminal_name) %in% V(tree)$name)) {
+                        treeData_min <- treeData
+                }
 
-                #if (treeData$cost < treeData_min$cost && ) {
-                #        treeData_min <- treeData
-                #}
+                iter <- iter + 1
 
                 if (iter >= max_iter || tol <= eps) {
                         treeData_min$iter <- iter
