@@ -1,7 +1,6 @@
 # pcSteiner
 
-![](http://www.r-pkg.org/badges/version-ago/pcSteiner)
-![](http://cranlogs.r-pkg.org/badges/grand-total/pcSteiner)
+![](https://travis-ci.org/krashkov/pcSteiner.svg?branch=master)
 [![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)](https://github.com/joethorley/stability-badges#experimental)
 
 
@@ -11,7 +10,7 @@ Package for solving Prize-Collecting Steiner Tree Problem.
 
 Run the following command:
 
-    install.packages("pcSteiner")
+    remotes::install_github("krashkov/pcSteiner")
 
 ## References
 

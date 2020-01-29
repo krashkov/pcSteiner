@@ -20,8 +20,7 @@
 #' g <- graph('Bull')
 #' E(g)$costs  <- c(3, 3, 3, 3, 3)
 #' V(g)$prizes <- c(10, 2, 2, 2, 2)
-#' treeData <- pcs.tree(graph=g, terminals=c(4,5), lambda=1,
-#'                      root=3, depth=5, eps=-1, max_iter=10)
+#' treeData <- pcs.tree(graph=g, terminals=c(4,5), lambda=1, root=3, depth=5, eps=1e-3, max_iter=10)
 #'
 #' @references 1. M. Bayati, C. Borgs, A. Braunstein, J. Chayes, A. Ramezanpour, and R. Zecchina,
 #'                "Statistical Mechanics of Steiner Trees". PRL, 2008.

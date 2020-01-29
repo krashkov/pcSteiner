@@ -88,7 +88,7 @@ The Prize-Collecting Steiner Tree problem reduces to the Steiner problem when al
 
 ## 2.1 Preliminaries: graphical models and statistical inference
 
-\forceindent \textit{Graphical model} is a compact representation of a collection of probability distributions. It consists of a graph $G = (V, E)$, directed or undirected, where each vertex $v \in V$ is accosiated with a random variable. Edges of the graph represent statistical relationship between nodes. There are several main types of graphical models:
+\forceindent \textit{Graphical model} is a compact representation of a collection of probability distributions. It consists of a graph $G = (V, E)$, directed or undirected, where each vertex $v \in V$ is associated with a random variable. Edges of the graph represent statistical relationship between nodes. There are several main types of graphical models:
 
 * Bayesian networks
 * Markov random fields
@@ -120,7 +120,7 @@ where $Z$ is a constant chosen to ensure that the distribution is normalized. Th
 
 \forceindent The most general parameterization is a *factor graph*. Factor graphs explicitly draw out the factors in a factorization of the joint probability. Note, that it is possible to convert arbitrary MRF or Bayesian network into equivalent factor graph.
 
-**Defenition 2.1.** Factor graph is a pair $\mathcal{F} = (G, \{f_1, \dots, f_n\})$, where
+**Definition 2.1.** Factor graph is a pair $\mathcal{F} = (G, \{f_1, \dots, f_n\})$, where
 
 \begin{itemize}
     \item $G = (V, E)$ is an undirected bipartite graph such that $V = X \cup F$, where $X \cup F = \emptyset$. The nodes $X$ are variable nodes, while the nodes F are factor nodes.
@@ -236,7 +236,7 @@ All multiplications are now replaced by additions, and equations take the so-cal
 
 \forceindent Recall, that every type of inference in graphical models is $NP$-hard. Suppose, that each variable has $k$ number of statets. If we know nothing about the structure of the joint probability, evaluation of desired marginal probability distribution would require $\mathcal{O}(k^{|V|})$ computations, where $|V|$ - number of nodes in the graph. Fortunately, factorization of the sum as we did in Eq. (2.5) reduces the total complexity to $\mathcal{O}(|V|\ k^2)$.
 
-\forceindent So, BP algorithm is exact and efficient agorithm for performing inference in loop-free probabalistic graphical models.
+\forceindent So, BP algorithm is exact and efficient algorithm for performing inference in loop-free probabalistic graphical models.
 
 ## 2.3 Loopy belief propagation
 

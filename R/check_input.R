@@ -17,22 +17,9 @@ check_input <- function (graph, terminals, lambda, root, depth, eps, max_iter) {
                 stop("Error: Edges do not have costs")
 
 
-        # Check terminals
-        if (is.null(terminals) || is.na(terminals) || length(terminals) == 0)
-                stop("Error: Terminals not found")
-
-
         # Check lambda
-        if (! class(lambda) == "numeric" & ! class(lambda) == "integer") {
+        if (class(lambda) != "numeric")
                 stop("Error: lambda is not a number")
-                if (lambda <= 0)
-                        stop("Error: lambda <= 0")
-        }
-
-
-        # Check root
-        if (is.null(root) || is.na(root) || length(root) != 1)
-                stop("Error: Root not found")
 
 
         # Check names of vertices
@@ -56,7 +43,7 @@ check_input <- function (graph, terminals, lambda, root, depth, eps, max_iter) {
                         terminal_id   <- match(terminals, V(graph)$realname)
                         terminal_name <- V(graph)$name[terminal_id]
                 }
-        } else if (class(terminals) == "numeric" | class(terminals) == "integer") {
+        } else if (class(terminals) == "numeric") {
                 # terminals contains id's of vertices
                 terminal_id   <- terminals
                 terminal_name <- V(graph)$name[terminal_id]
@@ -72,7 +59,7 @@ check_input <- function (graph, terminals, lambda, root, depth, eps, max_iter) {
                         root_id   <- match(root, V(graph)$realname)
                         root_name <- V(graph)$name[root_id]
                 }
-        } else if (class(terminals) == "numeric" | class(terminals) == "integer") {
+        } else if (class(terminals) == "numeric") {
                 root_id   <- root
                 root_name <- V(graph)$name[root_id]
         } else
@@ -80,27 +67,19 @@ check_input <- function (graph, terminals, lambda, root, depth, eps, max_iter) {
 
 
         # Check depth
-        if (! class(depth) == "numeric" & ! class(depth) == "integer") {
+        if (class(depth) != "numeric") {
                 stop("Error: depth is not a number")
-                if (depth <= 0)
-                        stop("Error: depth <= 0")
         }
 
 
         # Check eps
-        if (! class(eps) == "numeric" & ! class(eps) == "integer") {
+        if (class(eps) != "numeric")
                 stop("Error: eps is not a number")
-                if (eps <= 0)
-                        stop("Error: eps <= 0")
-        }
 
 
         # Check max_iter
-        if (! class(max_iter) == "numeric" & ! class(max_iter) == "integer") {
+        if (class(max_iter) != "numeric")
                 stop("Error: max_iter is not a number")
-                if (max_iter <= 0)
-                        stop("Error: max_iter <= 0")
-        }
 
 
         checkInput_res <- list()
