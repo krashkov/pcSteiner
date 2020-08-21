@@ -2,9 +2,12 @@ Package: pcSteiner
 Type: Package
 Version: 1.0.0
 Date: 2020-08-21
-Title: Tool to Solve the Prize-Collecting Steiner Tree Problem
-Description: Provides convenient functionality for solving
-    the Prize-Collecting Steiner Tree problem via message passing approach.
+Title: Convenient Tool for Solving the Prize-Collecting Steiner Tree Problem
+Description: The Prize-Collecting Steiner Tree problem asks to find a subgraph
+    connecting a given set of vertices with the most expensive nodes and least
+    expensive edges. Since it is proven to be NP-hard, exact and efficient algorithm
+    does not exist. This package provides convenient functionality for obtaining an
+    approximate solution to this problem using loopy belief propagation algorithm.
 Author: Aleksei Krasikov <krasikov.as@phystech.edu>
 Maintainer: Aleksei Krasikov <krasikov.as@phystech.edu>
 URL: https://github.com/krashkov/pcSteiner

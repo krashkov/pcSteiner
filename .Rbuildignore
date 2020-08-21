@@ -6,3 +6,4 @@
 ^doc$
 ^Meta$
 ./vignettes/tutorial.pdf
+^CRAN-RELEASE$
