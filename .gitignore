@@ -2,9 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
-pcSteiner.Rproj
+*.Rproj
 /revdep/.cache.rds
-.DS_Store
+*.DS_Store
 
 doc
 Meta

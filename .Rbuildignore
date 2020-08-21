@@ -1,9 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^cran-comments\.md$
+^revdep$
+^\.travis\.yml$
 ^doc$
 ^Meta$
-
 ./vignettes/tutorial.pdf
-^CRAN-RELEASE$
-
-^\.travis\.yml$
