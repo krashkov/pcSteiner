@@ -1,14 +1,18 @@
 # pcSteiner
 
 ![](https://travis-ci.org/krashkov/pcSteiner.svg?branch=master)
-[![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)](https://github.com/joethorley/stability-badges#experimental)
+![](http://www.r-pkg.org/badges/version-ago/pcSteiner)
+![](http://cranlogs.r-pkg.org/badges/grand-total/pcSteiner)
 
-
-Package for solving Prize-Collecting Steiner Tree Problem.
+The Steiner tree problem is a well-known combinatorial optimization problem which asks a minimum spanning subtree containing a given subset of vertices (terminals). However, in many practical applications nodes and edges have an additional numerical value which represents their significance. That is where the Prize-Collecting Steiner Tree problem arises: the goal is to find a subgraph connecting all the terminals with the most expensive nodes and least expensive edges. Since this problem is proven to be NP-hard, exact and efficient algorithm does not exist. Loopy belief propagation can be utilised to obtain an approximate solution to this problem [1,2].
 
 ## Installation
 
-Run the following command:
+Install the package from CRAN:
+
+    install.packages("SteinerNet")
+    
+Or get the development version from GitHub:
 
     remotes::install_github("krashkov/pcSteiner")
 
