@@ -5,14 +5,18 @@
 #'
 #' @usage pcs.tree(graph, terminals, lambda, root, depth, eps, max_iter, terminal_infty=10000)
 #'
-#' @param graph an igraph graph
-#' @param terminals a numeric or character vector.
-#' @param lambda a numeric parameter.
-#' @param root a numeric or character scalar.
-#' @param depth a numeric scalar.
-#' @param eps a numeric scalar.
-#' @param max_iter a numeric scalar; specifies maximum number of iterations.
-#' @param terminal_infty a numeric scalar.
+#' @param graph an igraph graph.
+#' @param terminals a numeric or character vector which contains either ids or names of terminal nodes.
+#' @param lambda a numeric parameter which establishes a ratio between edge costs and node prizes
+#'               (see Sec.1 or Sec.3 in the vignette).
+#' @param root a numeric or character scalar which corresponds to either id or name of a root (see
+#'             Sec.3 in the vignette).
+#' @param depth a numeric scalar which sets depth of the resultant tree (see Sec.3 in the vignette).
+#' @param eps a numeric scalar which specifies tolerance for termination. 
+#' @param max_iter a numeric scalar which specifies maximum number of iterations.
+#' @param terminal_infty a numeric scalar which corresponds to a prize for each terminal node. This
+#'                       value should be large enough to ensure that all terminals will be presented
+#'                       in a solution.
 #'
 #' @return Returns a list with cost and edges of the final tree.
 #'

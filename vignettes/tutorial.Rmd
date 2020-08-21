@@ -56,11 +56,11 @@ This vignette document sets the following goals: expound the Prize-Collecting St
 |         *Input:* an undirected graph $G$, a set $T \subseteq V$ and weights $c:E \rightarrow R_+$
 |         *Output:* a minimum weight tree connecting all vertices of $T$ in $G$
 
-**Theorem 1.1.** The Steiner tree problem is $NP$-complete, even for unit weights (Karp 1972).
+**Theorem 1.1.** The Steiner tree problem is $NP$-hard, even for unit weights (Karp 1972).
 
 \forceindent There are two special cases of the Steiner tree problem. If $|T| = 2$, then the problem is reduced to the Shortest Path problem between a pair of vertices in a graph, which is in the class $P$. The second special case to be considered is when $|T| = |V|$ and the problem is reduced to finding Minimum Spanning tree, which is again solvable in polynomial time.
 
-\forceindent In many cases nodes have an additional numerical value, which represent their significance. That is where the *Prize-Collecting Steiner Tree problem* arises. Roughly speaking, the goal is to find a subgraph $G_1$ in $G$ connecting all the terminals $T$ with the most expensive nodes and least expensive edges. Note, that the result will be a tree as in the Steiner problem.
+\forceindent In many cases nodes have an additional numerical value, which represents their significance. That is where the *Prize-Collecting Steiner Tree problem* arises. Roughly speaking, the goal is to find a subgraph $G_1$ in $G$ connecting all the terminals $T$ with the most expensive nodes and least expensive edges. Note, that the result will be a tree as in the Steiner problem.
 
 |    **Problem 1.2 (Prize-Collecting Steiner Tree problem).**
 |         *Input:* an undirected graph $G$, a set $T \subseteq V$, costs $c:E \rightarrow R_+$ and prizes $p: V \rightarrow R_+$
@@ -72,7 +72,7 @@ Since a constant value does not change a maximum, we can subtract a total node p
 |         *Input:* an undirected graph $G$, a set $T \subseteq V$, costs $c:E \rightarrow R_+$ and prizes $p: V \rightarrow R_+$
 |         *Output:* find a tree $G_1$ by minimizing the following function $f(G_1) = \sum_{e \in E_1} c_e - \lambda \sum_{i \in V_1} p_i$
 
-The Prize-Collecting Steiner Tree problem reduces to the Steiner problem when all prizes are equal to one, so it is at least NP-complete. Thus, we do not expect to have an efficient algorithm for solving PCST problem.
+The Prize-Collecting Steiner Tree problem reduces to the Steiner problem when all prizes are equal to one, so it is at least $NP$-hard. Thus, we do not expect to have an efficient algorithm for solving PCST problem exactly.
 
 *References*
 

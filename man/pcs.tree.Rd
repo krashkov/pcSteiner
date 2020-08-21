@@ -7,21 +7,25 @@
 pcs.tree(graph, terminals, lambda, root, depth, eps, max_iter, terminal_infty=10000)
 }
 \arguments{
-\item{graph}{an igraph graph}
+\item{graph}{an igraph graph.}
 
-\item{terminals}{a numeric or character vector.}
+\item{terminals}{a numeric or character vector which contains either ids or names of terminal nodes.}
 
-\item{lambda}{a numeric parameter.}
+\item{lambda}{a numeric parameter which establishes a ratio between edge costs and node prizes
+(see Sec.1 or Sec.3 in the vignette).}
 
-\item{root}{a numeric or character scalar.}
+\item{root}{a numeric or character scalar which corresponds to either id or name of a root (see
+Sec.3 in the vignette).}
 
-\item{depth}{a numeric scalar.}
+\item{depth}{a numeric scalar which sets depth of the resultant tree (see Sec.3 in the vignette).}
 
-\item{eps}{a numeric scalar.}
+\item{eps}{a numeric scalar which specifies tolerance for termination.}
 
-\item{max_iter}{a numeric scalar; specifies maximum number of iterations.}
+\item{max_iter}{a numeric scalar which specifies maximum number of iterations.}
 
-\item{terminal_infty}{a numeric scalar.}
+\item{terminal_infty}{a numeric scalar which corresponds to a prize for each terminal node. This
+value should be large enough to ensure that all terminals will be presented
+in a solution.}
 }
 \value{
 Returns a list with cost and edges of the final tree.
