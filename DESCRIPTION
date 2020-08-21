@@ -2,7 +2,7 @@ Package: pcSteiner
 Type: Package
 Version: 1.0.0
 Date: 2020-08-21
-Title: Tool to Solve the Prize-Collecting Steiner Tree Problem
+Title: Convenient Tool for Solving the Prize-Collecting Steiner Tree Problem
 Description: Provides convenient functionality for solving
     the Prize-Collecting Steiner Tree problem via message passing approach.
 Author: Aleksei Krasikov <krasikov.as@phystech.edu>

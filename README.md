@@ -8,13 +8,9 @@ The Steiner tree problem is a well-known combinatorial optimization problem whic
 
 ## Installation
 
-Install the package from CRAN:
+To get the latest version of the package and install it from CRAN run the following command:
 
-    install.packages("SteinerNet")
-    
-Or get the development version from GitHub:
-
-    remotes::install_github("krashkov/pcSteiner")
+    install.packages("pcSteiner")
 
 ## References
 
