@@ -33,20 +33,20 @@ initialize_messages <- function (graph, depth, rand) {
                 # Adding random noise
 
                 if (rand) {
-                        msg$B[[key_dir]] <- -runif(1)
-                        msg$B[[key_rev]] <- -runif(1)
+                        msg$B[[key_dir]] <- -stats::runif(1)
+                        msg$B[[key_rev]] <- -stats::runif(1)
 
                         for (d in 1:depth) {
-                                msg$A[[key_dir]][d] <- -runif(1)
-                                msg$A[[key_rev]][d] <- -runif(1)
+                                msg$A[[key_dir]][d] <- -stats::runif(1)
+                                msg$A[[key_rev]][d] <- -stats::runif(1)
                         }
 
                         msg$D[[key_dir]] <- max(msg$B[[key_dir]], max(msg$A[[key_dir]]))
                         msg$D[[key_rev]] <- max(msg$B[[key_rev]], max(msg$A[[key_rev]]))
 
                         for (d in 1:depth) {
-                                C_key_dir <- -runif(1)
-                                C_key_rev <- -runif(1)
+                                C_key_dir <- -stats::runif(1)
+                                C_key_rev <- -stats::runif(1)
 
                                 msg$E[[key_dir]][d] <- max(C_key_dir, msg$D[[key_dir]])
                                 msg$E[[key_rev]][d] <- max(C_key_rev, msg$D[[key_rev]])

@@ -11,14 +11,14 @@ compute_tol <- function (graph, depth, msg_new, msg_old) {
 
                 tol <- max(
                         tol,
-                        max(0, abs(na.omit(msg_new$A[[key_dir]] - msg_old$A[[key_dir]]))),
-                        max(0, abs(na.omit(msg_new$A[[key_rev]] - msg_old$A[[key_rev]]))),
-                        max(0, abs(na.omit(msg_new$E[[key_dir]] - msg_old$E[[key_dir]]))),
-                        max(0, abs(na.omit(msg_new$E[[key_rev]] - msg_old$E[[key_rev]]))),
-                        na.omit(abs(msg_new$B[[key_dir]] - msg_old$B[[key_dir]])),
-                        na.omit(abs(msg_new$B[[key_rev]] - msg_old$B[[key_rev]])),
-                        na.omit(abs(msg_new$D[[key_dir]] - msg_old$D[[key_dir]])),
-                        na.omit(abs(msg_new$D[[key_rev]] - msg_old$D[[key_rev]]))
+                        max(0, abs(stats::na.omit(msg_new$A[[key_dir]] - msg_old$A[[key_dir]]))),
+                        max(0, abs(stats::na.omit(msg_new$A[[key_rev]] - msg_old$A[[key_rev]]))),
+                        max(0, abs(stats::na.omit(msg_new$E[[key_dir]] - msg_old$E[[key_dir]]))),
+                        max(0, abs(stats::na.omit(msg_new$E[[key_rev]] - msg_old$E[[key_rev]]))),
+                        stats::na.omit(abs(msg_new$B[[key_dir]] - msg_old$B[[key_dir]])),
+                        stats::na.omit(abs(msg_new$B[[key_rev]] - msg_old$B[[key_rev]])),
+                        stats::na.omit(abs(msg_new$D[[key_dir]] - msg_old$D[[key_dir]])),
+                        stats::na.omit(abs(msg_new$D[[key_rev]] - msg_old$D[[key_rev]]))
                 )
 
         }

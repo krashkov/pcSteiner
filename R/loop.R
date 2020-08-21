@@ -48,7 +48,8 @@ loop <- function (graph, lambda, depth, msg_old, msg_new, permutation) {
 
                         # Compute new messages
                         neighbor_idx <- 1
-                        for (neighbor in as.integer(neighbors(g, vert))) {
+                        # for (neighbor in as.integer(neighbors(g, vert))) {
+                        for (neighbor in as.integer(neighbors(graph, vert))) {
                                 key_in  <- paste(c(neighbor, vert), collapse="")
                                 key_out <- paste(c(vert, neighbor), collapse="")
 
