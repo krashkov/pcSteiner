@@ -3,4 +3,4 @@
 
 ### v1.0.0
 
-* The most basic functionality was added.
+* First release. Basic functionality was added.

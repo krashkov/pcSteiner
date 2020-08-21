@@ -1,18 +1,16 @@
 ## Test environments
 
-* local macOS Catalina 10.15.2, R 3.6.2
+* local macOS 10.14.6, R 4.0.2
+* travis-ci ubuntu 16.04.6 LTS (devel and release)
 * win-builder (devel, release, oldrelease)
 
 ## R CMD check results
 
-0 ERRORs | 0 WARNINGs | 3 NOTES
+0 errors | 0 warnings | 0 notes
 
 ## R-hub builder
 
-0 ERRORs | 1 WARNINGs | 4 NOTES
-
-Warning is connected with missing LaTeX packages. It is a known issue
-[https://github.com/r-hub/rhub/issues/178](https://github.com/r-hub/rhub/issues/178
+0 errors | 0 warnings | 1 note
 
 ## Downstream dependencies
 

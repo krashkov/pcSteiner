@@ -236,7 +236,7 @@ All multiplications are now replaced by additions, and equations take the so-cal
 
 \forceindent Recall, that every type of inference in graphical models is $NP$-hard. Suppose, that each variable has $k$ number of statets. If we know nothing about the structure of the joint probability, evaluation of desired marginal probability distribution would require $\mathcal{O}(k^{|V|})$ computations, where $|V|$ - number of nodes in the graph. Fortunately, factorization of the sum as we did in Eq. (2.5) reduces the total complexity to $\mathcal{O}(|V|\ k^2)$.
 
-\forceindent So, BP algorithm is exact and efficient algorithm for performing inference in loop-free probabalistic graphical models.
+\forceindent So, BP algorithm is exact and efficient algorithm for performing inference in loop-free probabilistic graphical models.
 
 ## 2.3 Loopy belief propagation
 
@@ -515,7 +515,7 @@ $$
 
 **Stopping criteria**
 
-\forceindent The following stopping criterias are utilized:
+\forceindent The following stopping criteria are utilized:
 
 * ```max_iter``` parameter is required, so the program will abort the computation as soon as number of iteration exceed the given value.
 * ```eps``` parameter is required. If maximum of the message difference between two consecutive iterations will be less, than given value, then the program will stop.
